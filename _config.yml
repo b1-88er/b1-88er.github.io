@@ -1,13 +1,14 @@
 # Site settings
-title:       Pixyll
-email:       your_email@example.com
-author:      John Otander
-description: "A simple, beautiful theme for Jekyll that emphasizes content rather than aesthetic fluff."
+title:       edd's blog
+email:
+author:      Piotr Szymański
+description: "Software Engineer views about enything."
 baseurl:     ""
-url:         "http://pixyll.com"
+url:
 
 # Google analytics
-google_analytics:
+google_analytics: UA-64589670-1
+
 
 # Optional features
 animated:           false
@@ -19,30 +20,30 @@ show_post_footers:  false
 disqus_shortname:
 
 # Social icons
-show_social_icons: false
-github_username:
+show_social_icons: true
+github_username: eddwardo
 stackoverflow_id:
-twitter_username:
+twitter_username: educhna
 google_plus_id:
-linkedin_username:
+linkedin_username: skyleton@gmail.com
 angellist_username:
 bitcoin_url:
 paypal_url:
 flattr_button:
 
 # Post sharing icons
-show_sharing_icons: false
+show_sharing_icons: true
 share_text: 'Share this post!'
 # Change to 'true' to enable individual icons
 share_facebook: false
-share_twitter: false
+share_twitter: true
 share_googleplus: false
 share_linkedin: false
 share_digg: false
 share_tumblr: false
 share_reddit: false
 share_stumbleupon: false
-share_hackernews: false
+share_hackernews: true
 
 # Build settings
 markdown:     redcarpet

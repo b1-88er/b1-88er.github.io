@@ -1,3 +1,4 @@
+*.sw[p|o]
 _site
 .sass-cache
 .DS_Store

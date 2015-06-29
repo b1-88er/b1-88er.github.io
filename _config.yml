@@ -4,7 +4,7 @@ email:
 author:      Piotr Szymański
 description: "Software Engineer views about enything."
 baseurl:     ""
-url:
+url:         "http://eddwardo.github.io"
 
 # Google analytics
 google_analytics: UA-64589670-1
@@ -22,7 +22,7 @@ disqus_shortname:
 # Social icons
 show_social_icons: true
 github_username: eddwardo
-stackoverflow_id:
+stackoverflow_id: eddd
 twitter_username: educhna
 google_plus_id:
 linkedin_username: piotrszymanski3
@@ -33,7 +33,7 @@ flattr_button:
 
 # Post sharing icons
 show_sharing_icons: true
-share_text: 'Share this post!'
+share_text: 'Share'
 # Change to 'true' to enable individual icons
 share_facebook: false
 share_twitter: true

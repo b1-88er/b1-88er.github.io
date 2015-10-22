@@ -22,7 +22,7 @@ Every resource about Elixir will have such an example. Spawn/1 (there is `spawn/
 
 > Q: Is this PID is a completely random number?
 
-> A: Yes, it is. You have no control over process id number but you can name them.
+> A: Not entirely, but you have no control over process id number. I found good [stackoverlow answer to that one](http://stackoverflow.com/questions/243363/can-someone-explain-the-structure-of-a-pid-in-erlang?rq=1)
 
 > Q: Can this function take any argument?
 
@@ -185,7 +185,7 @@ You should see window like this one.
 
 ![Erlang VM observer]({{ site.baseurl }}/images/erlang_vm_observer.png)
 
-Go ahead, click around and explore. Especially applications tab is interesting. You can peek and check process trees. Now we are ready to benchmark our ping process, we are going to call it 100M times, just type fallowing line and go right to observer window.
+Go ahead, click around and explore. Especially applications tab is interesting. You can peek and check process trees. Now we are ready to benchmark our ping process, we are going to call it 100M times, just type following line and go right to observer window.
 {% highlight elixir %}
 iex(3)> p = Table.start
 #PID<0.1569.0>

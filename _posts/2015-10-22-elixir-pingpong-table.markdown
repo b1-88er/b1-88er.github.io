@@ -112,8 +112,7 @@ defmodule Table do
   end
 
   def start do
-    ping_pid = spawn(__MODULE__, :ping, [])
-    ping_pid
+    spawn(__MODULE__, :ping, [])
   end
 end
 {% endhighlight %}
@@ -278,8 +277,7 @@ defmodule Table do
   end
 
   def start do
-    ping_pid = spawn(__MODULE__, :ping, [])
-    ping_pid
+    spawn(__MODULE__, :ping, [])
   end
 end
 {% endhighlight %}

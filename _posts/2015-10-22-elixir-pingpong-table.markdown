@@ -1,6 +1,6 @@
 ---
 layout: post
-title: My discovers about Elixir processes
+title: My discoveries about Elixir processes
 date: 2015-10-22
 summary: How did I learn about Elixir processes that is worth sharing.
 categories: elixir

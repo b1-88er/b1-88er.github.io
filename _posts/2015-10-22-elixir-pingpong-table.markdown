@@ -57,7 +57,7 @@ iex(10)> Process.alive? pid
 false
 {% endhighlight %}
 
-So process is dead after doing its job. I am not sure if it is documented anywhere but to me the general idea behind BEAM/Erlang processes is: "If you don't know what to do, just kill yourself". This might sound depressing in real world, but in BEAM it seems to be very handy. So the answer is: NO - this process is dead.
+So process is dead after doing its job. So the answer is: NO - this process is dead.
 
 ### Process inside a module
 I mentioned `spawn/3`. If you don't know what given function does, just type `h(function/number_arguments)` and you will see something like this:

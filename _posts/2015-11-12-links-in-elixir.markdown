@@ -130,7 +130,7 @@ iex(4)> flush
 Spawned process sent us **{:EXIT, #PID<0.145.0>, :normal}**. This means that process finished its work without any problems. Now, lets replicate that behavior more explicitly.
 
 {% highlight elixir %}
-iex(5)> spawn_link(fn -> Process.exit(self(), :normal) end)
+iex(5)> spawn_link(fn -> exit(:normal) end)
 #PID<0.164.0>
 iex(6)> flush
 {:EXIT, #PID<0.164.0>, :normal}
@@ -140,7 +140,7 @@ iex(6)> flush
 Now lets try to exit process with a message different that normal.
 
 {% highlight elixir %}
-iex(7)> spawn_link(fn -> Process.exit(self(), :custom_reason) end)
+iex(7)> spawn_link(fn -> exit(:custom_reason) end)
 #PID<0.167.0>
 iex(8)> flush
 {:EXIT, #PID<0.167.0>, :custom_reason}
@@ -183,7 +183,7 @@ defmodule LinksTest do
   def chain 0 do
     IO.puts "chain called with 0, wating 2000 ms before exit"
     :timer.sleep(2000)
-    Process.exit(self(), :chain_breaks_here)
+    exit(:chain_breaks_here)
   end
 
   def chain n do
@@ -204,14 +204,14 @@ And here is the demo
 
 ![chain demo]({{ site.base_url }}/images/process_chain.gif)
 
-The interesting fact is, after exit with **:chain\_breaks_here**, next exists are :normal. It is because first process that catches :chain\_breaks_here exit code consumes it and then exits normally so error is swallowed by the first process that catches it. If we didn't trap exits in the chain and exit in the last process normally (:normal), the process would not exit at all - links prevent this. In other words: **When calling Process.exit(self(), :normall), self() will no finish, it will stay up**. Lets demo that as well!
+The interesting fact is, after exit with **:chain\_breaks_here**, next exists are :normal. It is because first process that catches :chain\_breaks_here exit code consumes it and then exits normally so error is swallowed by the first process that catches it. If we didn't trap exits in the chain and exit in the last process normally (:normal), the process would not exit at all - links prevent this. In other words: **When calling exit(:normal) the process will not finish, it will stay up**. Lets demo that as well!
 
 Here is the code:
 {% highlight elixir %}
 defmodule LinksTestNoTrap do
   def chain 0 do
     IO.puts "normal exit in the last link"
-    Process.exit(self(), :normal)
+    exit(:normal)
   end
 
   def chain n do

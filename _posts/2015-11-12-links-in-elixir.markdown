@@ -235,7 +235,7 @@ And here is the demo
 ![oracle matrix meme]({{ site.baseurl }}/images/3_musketeers_links.jpg)
 </span>
 
-By far we were killing processes that we children of other processes. The question is:
+By far we were killing processes that were children of other processes. The question is:
 
 > Q: What if I kill the parent, will links break then?
 

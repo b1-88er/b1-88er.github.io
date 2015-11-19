@@ -78,7 +78,7 @@ Examples
 {% endhighlight %}
 
 
-So this is straight forward. Is is worth mentioning that the second argument must be an atom. And the third argument is a list of arguments, so if you want to pass a single list as an argument you need to pass `[[:items, :of, :a, :passed, :list]]`.
+So this is straight forward. It is worth mentioning that the second argument must be an atom. And the third argument is a list of arguments, so if you want to pass a single list as an argument you need to pass `[[:items, :of, :a, :passed, :list]]`.
 
 ### Ping-pong game table
 
@@ -101,7 +101,7 @@ We can demonstrate some elixir processes properties during a simple exercise. Le
 ```
 
 
-Lets define a module that spawns processes and starts interaction with them. We going to solve this by incrementally adding code and asking bunch of noobie questions to learn as much as we can. Lets start with a basic process and a start function, we are trying to solve: *"iex" :pinging ping process*
+Lets define a module that spawns processes and starts interaction with them. We are going to solve this by incrementally adding code and asking bunch of noobie questions to learn as much as we can. Lets start with a basic process and a start function, we are trying to solve: *"iex" :pinging ping process*
 
 {% highlight elixir %}
 defmodule Table do

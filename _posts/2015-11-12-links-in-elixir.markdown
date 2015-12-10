@@ -75,7 +75,7 @@ Or to be more specific: "spawn_link will notify linked process about abnormal ex
 <span style="float: right; padding-left: 20px;" markdown="1">
 ![oracle matrix meme]({{ site.baseurl }}/images/meme_oracle_happens_for_a_reason.jpg)
 </span>
-When process finishes its work, it exists. It is a different mechanism than exceptions and with it we can detect when something wrong (or unexpected) happened. When process finishes its work it implicitly calls **exit(:normal)** to communicate with its parent that job has been done. Every other argument to exit/1 than **:normal** will be treaded as an error. You should also know that Elixir shell is a process as well, so you should be able to link to it as well.
+When a process finishes its work, it exits. It is a different mechanism than exceptions and with it we can detect when something wrong (or unexpected) happened. When process finishes its work it implicitly calls **exit(:normal)** to communicate with its parent that job has been done. Every other argument to exit/1 than **:normal** will be treaded as an error. You should also know that Elixir shell is a process as well, so you should be able to link to it as well.
 
 {% highlight elixir %}
 iex(1)> spawn_link(fn -> exit(:normal) end)

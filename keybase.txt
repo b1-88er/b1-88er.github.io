@@ -1,0 +1,57 @@
+==================================================================
+https://keybase.io/piotrszymanski
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://eddwardo.github.io
+  * I am piotrszymanski (https://keybase.io/piotrszymanski) on keybase.
+  * I have a public key ASDgP_b6cgauf-PikCjf7auKaHFk68j6cgJ8Cy_1OIHm5wo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0120e03ff6fa7206ae7fe3e29028dfedab8a687164ebc8fa72027c0b2ff53881e6e70a",
+      "host": "keybase.io",
+      "kid": "0120e03ff6fa7206ae7fe3e29028dfedab8a687164ebc8fa72027c0b2ff53881e6e70a",
+      "uid": "810ecd250ac5f6dfb7ab91ee97205119",
+      "username": "piotrszymanski"
+    },
+    "merkle_root": {
+      "ctime": 1546207077,
+      "hash": "2d07e89597de2f30766e7c2a4b2a49086416fb6cf788827a647ba265a8821c97a1bd340cb19ae166a2a4f88b08053822419089eaa39ffea7d01f6c969047d074",
+      "hash_meta": "985298211df93c6ba53e9bdb429b264577f7c5189c238a1276ecebaeef4e2cd9",
+      "seqno": 4211361
+    },
+    "service": {
+      "entropy": "a/7h9S+Y16NhDYJ1AFNNWQqC",
+      "hostname": "eddwardo.github.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "2.13.0"
+  },
+  "ctime": 1546207125,
+  "expire_in": 504576000,
+  "prev": "da37074a313e06e6253d03376a363db5fc1755f4104a5262e2eaf6275379c72f",
+  "seqno": 12,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEg4D/2+nIGrn/j4pAo3+2rimhxZOvI+nICfAsv9TiB5ucKp3BheWxvYWTESpcCDMQg2jcHSjE+BuYlPQM3ajY9tfwXVfQQSlJi4ur2J1N5xy/EIOyYYee/5noAwWRJS7B062zFr1RVgRPJ2rYHeXTz8E+sAgHCo3NpZ8RAiPhY8wGyr9zbOTRa/JNBI/EGrFuQfK7MeNFFysuYNgCu9YMlGHsbFa7giB/unnNyVZKxeVJgE8gYXOvArTI2D6hzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIGdL69/WjcZLOZ+TS8PjY/8c4PmWf1Gz6FeM2pF4bgSXo3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/piotrszymanski
+
+==================================================================
+

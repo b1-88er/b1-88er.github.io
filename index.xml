@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Edd&#39;s blog</title>
+    <link>/</link>
+    <description>Recent content on Edd&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 19 Aug 2019 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Storing secrets in terraform codebase with KMS</title>
+      <link>/posts/terraform-secrets-and-passwords/</link>
+      <pubDate>Mon, 19 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/terraform-secrets-and-passwords/</guid>
+      <description>How to store sensitive data like passwords within repo when using terraform. Simple solution for AWS users.</description>
+    </item>
+    
+    <item>
+      <title>Terraform production ready project structure</title>
+      <link>/posts/terraform-project-structure/</link>
+      <pubDate>Mon, 24 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/terraform-project-structure/</guid>
+      <description>How to organise terrafrom project structure with terragrunt.</description>
+    </item>
+    
+    <item>
+      <title>Peaks in pandas Time Series.</title>
+      <link>/posts/finding-local-extreams-in-pandas-time-series/</link>
+      <pubDate>Wed, 05 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/finding-local-extreams-in-pandas-time-series/</guid>
+      <description>How to find peaks in pandas time series.</description>
+    </item>
+    
+    <item>
+      <title>Serving an ECS service via both ALB and NLB</title>
+      <link>/posts/exposing-static-ip-of-ecs-service/</link>
+      <pubDate>Sun, 19 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/exposing-static-ip-of-ecs-service/</guid>
+      <description>How to serve an ECS service via both public ALB and public NLB.</description>
+    </item>
+    
+    <item>
+      <title>Design and Code</title>
+      <link>/posts/design-and-engineering/</link>
+      <pubDate>Thu, 06 Apr 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/design-and-engineering/</guid>
+      <description>The relationship between designers and software engineers.</description>
+    </item>
+    
+    <item>
+      <title>Linking Elixir processes together</title>
+      <link>/posts/links-in-elixir/</link>
+      <pubDate>Thu, 12 Nov 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/links-in-elixir/</guid>
+      <description>You are familiar with basic concept of Elixir/Erlang processes and you want to take a step further.</description>
+    </item>
+    
+    <item>
+      <title>My discoveries about Elixir processes</title>
+      <link>/posts/elixir-pingpong-table/</link>
+      <pubDate>Thu, 22 Oct 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/elixir-pingpong-table/</guid>
+      <description>How did I learn about Elixir processes that is worth sharing.</description>
+    </item>
+    
+    <item>
+      <title>Boto, s3 and remote metadata</title>
+      <link>/posts/boto-s3-and-remote-metadata/</link>
+      <pubDate>Wed, 01 Jul 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/boto-s3-and-remote-metadata/</guid>
+      <description>Setting remote metadata for files on s3 might be tricky, lets take a peek</description>
+    </item>
+    
+  </channel>
+</rss>

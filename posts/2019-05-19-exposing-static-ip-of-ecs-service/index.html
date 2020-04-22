@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Serving an ECS service via both ALB and NLB :: Edd&#39;s blog — Personal blog</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="How to serve an ECS service via both public ALB and public NLB." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="/posts/2019-05-19-exposing-static-ip-of-ecs-service/" />
+
+
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+  <link rel="stylesheet" href="/assets/green.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+<meta name="twitter:creator" content="" />
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Serving an ECS service via both ALB and NLB :: Edd&#39;s blog">
+<meta property="og:description" content="How to serve an ECS service via both public ALB and public NLB." />
+<meta property="og:url" content="/posts/2019-05-19-exposing-static-ip-of-ecs-service/" />
+<meta property="og:site_name" content="Serving an ECS service via both ALB and NLB" />
+
+  
+    <meta property="og:image" content="/img/favicon/green.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2019-05-19 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Edd&#39;s blog
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/cv.html">Hire me</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/cv.html">Hire me</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/posts/2019-05-19-exposing-static-ip-of-ecs-service/">Serving an ECS service via both ALB and NLB</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2019-05-19
+    </span>
+    
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h2 id="intro">Intro<a href="#intro" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>One of our clients has a firewall that allows whitelisting only IPv4 (no hostnames).
+For that reason, our API has to be accessible via list of static ip address.
+The service itself is a classic ECS service.
+Each container is a member of a target group.
+That target group is assigned to an ALB.
+When using Application Load Balancer, the hostname is given.
+Hostname is static and doesn&rsquo;t change over time.
+But we have no control over to which IPv4s it gets resolved.
+The challange here is: <em>&ldquo;How to identify the service via a list of static IP addresses?&quot;</em>
+This problem is tackled by <a href="https://aws.amazon.com/blogs/networking-and-content-delivery/using-static-ip-addresses-for-application-load-balancers/">AWS on this blog post</a>, but there is a fine print here.
+The ALB itself has to be internal one - which is the opposite what we are running.</p>
+<h2 id="architecture">Architecture<a href="#architecture" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Outline:</p>
+<ul>
+<li>Create a nginx PROXY based on ecs and nginx docker container.</li>
+<li>API can be accessed via ALB with all its advantages.</li>
+<li>Created NLB exposes created Elastic IPs (public).</li>
+<li>NLB passes traffic to the target group, which points to ECS service that runs nginx proxy.</li>
+<li>Nginx server uses <code>PROXY_PASS</code> derective to pass traffic to public ALB.</li>
+</ul>
+<p><img src="/images/nlb-alb-ecs-aws-architecture.svg" alt="architecture"></p>
+<h2 id="code">Code<a href="#code" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p><a href="https://github.com/eddwardo/nlb-alb-ecs-service">All code for this post is here</a></p>
+<h3 id="docker-image">Docker image<a href="#docker-image" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>This is the core that we can test on localhost.</p>
+<p>To do this, go to <a href="https://github.com/eddwardo/nlb-alb-ecs-service/tree/master/nginx-docker">this folder on your machine</a> and run the <code>docker-compose up</code>.
+The expected output is:</p>
+<pre><code>nginx-proxy-forwarder_1  | Requests will be forwarder to: google.com
+nginx-proxy-forwarder_1  | Config:
+nginx-proxy-forwarder_1  | *******************************
+nginx-proxy-forwarder_1  | server {
+nginx-proxy-forwarder_1  |     error_log /dev/stdout debug;
+nginx-proxy-forwarder_1  |     listen 8080;
+nginx-proxy-forwarder_1  |     location / {
+nginx-proxy-forwarder_1  |         proxy_pass https://google.com;
+nginx-proxy-forwarder_1  |     }
+nginx-proxy-forwarder_1  | }
+nginx-proxy-forwarder_1  | *******************************
+</code></pre><p>The container points to google.com, try it:</p>
+<pre><code>$ curl -I localhost:9003
+HTTP/1.1 301 Moved Permanently
+Server: nginx/1.14.2
+Date: Sun, 19 May 2019 20:46:00 GMT
+Content-Type: text/html; charset=UTF-8
+Content-Length: 220
+Connection: keep-alive
+Location: https://www.google.com/
+Expires: Tue, 18 Jun 2019 20:46:00 GMT
+Cache-Control: public, max-age=2592000
+X-XSS-Protection: 0
+X-Frame-Options: SAMEORIGIN
+Alt-Svc: quic=&quot;:443&quot;; ma=2592000; v=&quot;46,44,43,39&quot;
+</code></pre><p>Expected logs:</p>
+<pre><code> 172.28.0.1 - - [19/May/2019:20:46:00 +0000] &quot;HEAD / HTTP/1.1&quot; 301 0 &quot;-&quot; &quot;curl/7.54.0&quot; &quot;-&quot;
+ 2019/05/19 20:46:00 [info] 12#12: *7 client 172.28.0.1 closed keepalive connection
+</code></pre><p>It is fairly simple: config + Dockerfile.
+First snippet is the contents of the <code>Dockerfile</code> and the second is the <code>run.sh</code> script.</p>
+<p>Note that the nginx config is generated by the <code>run.sh</code>, meaning it gets generated each time container boots up.
+The goal is to be able to configure nginx based on <code>API_ENDPOINT</code> environment variable.</p>
+<pre><code>FROM nginx:stable-alpine
+RUN mkdir /nginx/
+COPY run.sh /nginx/
+ENTRYPOINT [&quot;/nginx/run.sh&quot;]
+</code></pre><pre><code>#!/bin/sh
+set -e
+
+cat &lt;&lt;EOF &gt; /etc/nginx/conf.d/passthrough.conf
+server {
+    error_log /dev/stdout debug;
+    listen 8080;
+    location / {
+        proxy_pass https://$API_ENDPOINT;
+    }
+}
+EOF
+
+echo &quot;Requests will be forwarder to: $API_ENDPOINT&quot;
+
+echo &quot;Config:&quot;
+echo &quot;*******************************&quot;
+cat /etc/nginx/conf.d/passthrough.conf
+echo &quot;*******************************&quot;
+nginx -g &quot;daemon off;&quot;
+</code></pre><h2 id="terraform-module">Terraform module<a href="#terraform-module" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>If you don&rsquo;t know terraform you can find a gentle introduction <a href="https://www.terraform.io/intro/index.html">here</a>.
+It is a tool for defining architecture as code.
+You define a desired state of your architecture and terraform tries to achieve it.
+This code is for educational purpose, clone it a refine it for your needs.
+And give me maybe a star on github ;)</p>
+<h3 id="proxy-ecs-service">Proxy ECS Service<a href="#proxy-ecs-service" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><img src="/images/nlb-ecs-nginx.png" alt="ecs-service"></p>
+<p>To pass the traffic to the target service, provision the container above as a simple ecs service.
+The entire <a href="https://github.com/eddwardo/nlb-alb-ecs-service/blob/master/ecs_service.tf">ECS part is on github</a>.
+I want to focus on 2 key issues here.</p>
+<ul>
+<li>The target domain you want to proxy to is defined by the variable <code>target_service_domain_name</code>.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-tf" data-lang="tf"><span style="color:#66d9ef">data</span> <span style="color:#e6db74">&#34;template_file&#34;</span> <span style="color:#e6db74">&#34;ecs_task_container_definitions&#34;</span> {
+  <span style="color:#a6e22e">template</span> = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>file(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">path</span>.module<span style="color:#e6db74">}</span><span style="color:#e6db74">/container-definition.json&#34;</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+
+  var<span style="color:#a6e22e">s</span> {
+    <span style="color:#a6e22e">container_name</span> = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">local</span>.<span style="color:#a6e22e">service_name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+
+    <span style="color:#a6e22e">image</span>          = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>var.<span style="color:#a6e22e">docker_image</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#a6e22e">version</span>        = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>var.<span style="color:#a6e22e">docker_image_version</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#a6e22e">cpu</span>            = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>var.<span style="color:#a6e22e">ecs_cpu</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#a6e22e">memory</span>         = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>var.<span style="color:#a6e22e">ecs_memory</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#a6e22e">container_port</span> = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">local</span>.<span style="color:#a6e22e">container_port</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#a6e22e">api_endpoint</span>   = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>var.<span style="color:#a6e22e">target_service_domain_name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">:443&#34;</span>
+  }
+}
+</code></pre></div><p>the <code>container-definition.json</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">[
+  {
+    <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;${container_name}&#34;</span>,
+    <span style="color:#f92672">&#34;image&#34;</span>: <span style="color:#e6db74">&#34;${image}:${version}&#34;</span>,
+    <span style="color:#f92672">&#34;cpu&#34;</span>: <span style="color:#960050;background-color:#1e0010">$</span>{<span style="color:#960050;background-color:#1e0010">cpu</span>},
+    <span style="color:#f92672">&#34;memoryReservation&#34;</span>: <span style="color:#960050;background-color:#1e0010">$</span>{<span style="color:#960050;background-color:#1e0010">memory</span>},
+    <span style="color:#f92672">&#34;essential&#34;</span>: <span style="color:#66d9ef">true</span>,
+    <span style="color:#f92672">&#34;portMappings&#34;</span>: [{
+        <span style="color:#f92672">&#34;containerPort&#34;</span>: <span style="color:#960050;background-color:#1e0010">$</span>{<span style="color:#960050;background-color:#1e0010">container_port</span>},
+        <span style="color:#f92672">&#34;protocol&#34;</span>: <span style="color:#e6db74">&#34;tcp&#34;</span>
+    }],
+    <span style="color:#f92672">&#34;environment&#34;</span> : [
+        { <span style="color:#f92672">&#34;name&#34;</span> : <span style="color:#e6db74">&#34;API_ENDPOINT&#34;</span>, <span style="color:#f92672">&#34;value&#34;</span> : <span style="color:#e6db74">&#34;${api_endpoint}&#34;</span> }
+    ]
+  }]<span style="color:#960050;background-color:#1e0010">}</span>
+<span style="color:#960050;background-color:#1e0010">]</span>
+</code></pre></div><ul>
+<li>the ecs task must run in <code>awsvpc</code> network mode. This is required to attach the task to the NLB target group later.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-tf" data-lang="tf"><span style="color:#66d9ef">resource</span> <span style="color:#e6db74">&#34;aws_ecs_task_definition&#34;</span> <span style="color:#e6db74">&#34;task&#34;</span> {
+  <span style="color:#a6e22e">family</span>                = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">local</span>.<span style="color:#a6e22e">service_name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  <span style="color:#a6e22e">container_definitions</span> = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>data.<span style="color:#a6e22e">template_file</span>.<span style="color:#a6e22e">ecs_task_container_definitions</span>.<span style="color:#a6e22e">rendered</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  <span style="color:#a6e22e">task_role_arn</span>         = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">aws_iam_role</span>.<span style="color:#a6e22e">ecs_task</span>.<span style="color:#a6e22e">arn</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#75715e">
+</span><span style="color:#75715e">  # each task gets its own net interface
+</span><span style="color:#75715e"></span>  <span style="color:#a6e22e">network_mode</span>          = <span style="color:#e6db74">&#34;awsvpc&#34;</span>
+}
+</code></pre></div><h3 id="networking">Networking<a href="#networking" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><img src="/Anlb-networking.png" alt="nlb-listener">{:height=&ldquo;400&rdquo; width=&ldquo;400&rdquo; .absolute-center}</p>
+<p><a href="https://github.com/eddwardo/nlb-alb-ecs-service/blob/master/nlb.tf">Click on this, to get the full code for the module</a></p>
+<p>This part is a bit more trickier, we need:</p>
+<ul>
+<li><a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html">Networking Load Balancer</a></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-tf" data-lang="tf"><span style="color:#66d9ef">resource</span> <span style="color:#e6db74">&#34;aws_lb&#34;</span> <span style="color:#e6db74">&#34;nlb&#34;</span> {
+  <span style="color:#a6e22e">name</span>         = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>var.<span style="color:#a6e22e">environment</span><span style="color:#e6db74">}</span><span style="color:#e6db74">-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">local</span>.<span style="color:#a6e22e">service_name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  <span style="color:#a6e22e">internal</span>     = <span style="color:#66d9ef">false</span>
+  <span style="color:#a6e22e">idle_timeout</span> = <span style="color:#e6db74">&#34;60&#34;</span>
+
+  <span style="color:#a6e22e">load_balancer_type</span>         = <span style="color:#e6db74">&#34;network&#34;</span>
+  <span style="color:#a6e22e">enable_deletion_protection</span> = <span style="color:#66d9ef">false</span>
+
+  <span style="color:#a6e22e">subnet_mapping</span> = [
+    {
+      <span style="color:#a6e22e">subnet_id</span> = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>var.<span style="color:#a6e22e">lb_subnet_ids</span>[<span style="color:#ae81ff">0</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>,
+      <span style="color:#a6e22e">allocation_id</span> = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">aws_eip</span>.<span style="color:#a6e22e">lb1</span>.<span style="color:#a6e22e">id</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    },
+    {
+      <span style="color:#a6e22e">subnet_id</span> = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>var.<span style="color:#a6e22e">lb_subnet_ids</span>[<span style="color:#ae81ff">1</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>,
+      <span style="color:#a6e22e">allocation_id</span> = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">aws_eip</span>.<span style="color:#a6e22e">lb2</span>.<span style="color:#a6e22e">id</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    },
+  ]
+
+  <span style="color:#a6e22e">enable_cross_zone_load_balancing</span> = <span style="color:#66d9ef">true</span>
+  <span style="color:#a6e22e">ip_address_type</span>                  = <span style="color:#e6db74">&#34;ipv4&#34;</span>
+}
+</code></pre></div><ul>
+<li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html">2 Elastic IPs as endpoints for the above LB</a></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-tf" data-lang="tf"><span style="color:#75715e"># dont use count due to the bug: https://github.com/hashicorp/terraform/issues/4944
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">resource</span> <span style="color:#e6db74">&#34;aws_eip&#34;</span> <span style="color:#e6db74">&#34;lb1&#34;</span> { <span style="color:#a6e22e">vpc</span>=<span style="color:#66d9ef">true</span> }
+<span style="color:#66d9ef">resource</span> <span style="color:#e6db74">&#34;aws_eip&#34;</span> <span style="color:#e6db74">&#34;lb2&#34;</span> { <span style="color:#a6e22e">vpc</span>=<span style="color:#66d9ef">true</span> }
+</code></pre></div><ul>
+<li><a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#target-type">Target group of type IP</a></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-tf" data-lang="tf"><span style="color:#66d9ef">resource</span> <span style="color:#e6db74">&#34;aws_lb_target_group&#34;</span> <span style="color:#e6db74">&#34;tg_for_nlb&#34;</span> {
+  <span style="color:#a6e22e">name</span>        = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>var.<span style="color:#a6e22e">environment</span><span style="color:#e6db74">}</span><span style="color:#e6db74">-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">local</span>.<span style="color:#a6e22e">service_name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">-tg-for-nlb&#34;</span>
+  <span style="color:#a6e22e">protocol</span>    = <span style="color:#e6db74">&#34;TCP&#34;</span>
+  <span style="color:#a6e22e">port</span>        = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">local</span>.<span style="color:#a6e22e">container_port</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  <span style="color:#a6e22e">vpc_id</span>      = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>var.<span style="color:#a6e22e">vpc_id</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  <span style="color:#a6e22e">target_type</span> = <span style="color:#e6db74">&#34;ip&#34;</span>
+
+  <span style="color:#a6e22e">health_check</span> {
+    <span style="color:#a6e22e">port</span> = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">local</span>.<span style="color:#a6e22e">container_port</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#a6e22e">interval</span> = <span style="color:#ae81ff">10</span>
+  }
+
+  <span style="color:#a6e22e">stickiness</span> {
+    <span style="color:#a6e22e">type</span>    = <span style="color:#e6db74">&#34;lb_cookie&#34;</span>
+    <span style="color:#a6e22e">enabled</span> = <span style="color:#66d9ef">false</span>
+  }
+}
+</code></pre></div><ul>
+<li><a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-tls-listener.html">TLS load balancer listener</a></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-tf" data-lang="tf"><span style="color:#66d9ef">resource</span> <span style="color:#e6db74">&#34;aws_lb_listener&#34;</span> <span style="color:#e6db74">&#34;nlb_listener&#34;</span> {
+
+  <span style="color:#a6e22e">load_balancer_arn</span> = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>module.<span style="color:#a6e22e">nlb</span>.<span style="color:#a6e22e">nlb_arn</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  <span style="color:#a6e22e">port</span>              = <span style="color:#e6db74">&#34;443&#34;</span>
+  <span style="color:#a6e22e">protocol</span>          = <span style="color:#e6db74">&#34;TLS&#34;</span>
+  <span style="color:#a6e22e">ssl_policy</span>        = <span style="color:#e6db74">&#34;ELBSecurityPolicy-TLS-1-2-2017-01&#34;</span>
+  <span style="color:#a6e22e">certificate_arn</span>   = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>data.<span style="color:#a6e22e">aws_acm_certificate</span>.<span style="color:#a6e22e">cert</span>.<span style="color:#a6e22e">arn</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+
+  <span style="color:#a6e22e">default_action</span> {
+    <span style="color:#a6e22e">target_group_arn</span> = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">aws_lb_target_group</span>.<span style="color:#a6e22e">tg_for_nlb</span>.<span style="color:#a6e22e">arn</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#a6e22e">type</span>             = <span style="color:#e6db74">&#34;forward&#34;</span>
+  }
+}
+</code></pre></div><ul>
+<li><a href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/rrsets-working-with.html">Route 53 record</a> and <a href="https://aws.amazon.com/certificate-manager/getting-started/">ACM certificate</a></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-tf" data-lang="tf"><span style="color:#66d9ef">resource</span> <span style="color:#e6db74">&#34;aws_route53_record&#34;</span> <span style="color:#e6db74">&#34;domain_to_eips&#34;</span> {
+  <span style="color:#a6e22e">zone_id</span> = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>var.<span style="color:#a6e22e">hosted_zone_id</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  <span style="color:#a6e22e">name</span>    = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>var.<span style="color:#a6e22e">domain_name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  <span style="color:#a6e22e">type</span>    = <span style="color:#e6db74">&#34;A&#34;</span>
+  <span style="color:#a6e22e">ttl</span>     = <span style="color:#e6db74">&#34;300&#34;</span>
+  <span style="color:#a6e22e">records</span> = [
+    <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">aws_eip</span>.<span style="color:#a6e22e">lb1</span>.<span style="color:#a6e22e">public_ip</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>,
+    <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">aws_eip</span>.<span style="color:#a6e22e">lb2</span>.<span style="color:#a6e22e">public_ip</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>,
+  ]
+}
+<span style="color:#66d9ef">
+</span><span style="color:#66d9ef">data</span> <span style="color:#e6db74">&#34;aws_acm_certificate&#34;</span> <span style="color:#e6db74">&#34;cert&#34;</span> {
+  <span style="color:#a6e22e">domain</span>   = <span style="color:#e6db74">&#34;*.</span><span style="color:#e6db74">${</span>var.<span style="color:#a6e22e">domain_name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  <span style="color:#a6e22e">statuses</span> = [<span style="color:#e6db74">&#34;ISSUED&#34;</span>]
+}
+</code></pre></div><h2 id="conclusion">Conclusion<a href="#conclusion" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>It is indeed a lot.</p>
+<p>Provisioning it by hand would take around an hour to get right.
+Terraform can do it not only faster, but also give you a sense of control over all these resources.</p>
+
+      </div></div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      <span class="button previous">
+        <a href="/posts/2019-06-05-finding-local-extreams-in-pandas-time-series/">
+          <span class="button__icon">←</span>
+          <span class="button__text">Peaks in pandas Time Series.</span>
+        </a>
+      </span>
+      
+      
+      <span class="button next">
+        <a href="/posts/2017-04-06-design-and-engineering/">
+          <span class="button__text">Design and Code</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

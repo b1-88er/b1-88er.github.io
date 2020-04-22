@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Linking Elixir processes together :: Edd&#39;s blog — Personal blog</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="You are familiar with basic concept of Elixir/Erlang processes and you want to take a step further." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="/posts/2015-11-12-links-in-elixir/" />
+
+
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+  <link rel="stylesheet" href="/assets/green.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+<meta name="twitter:creator" content="" />
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Linking Elixir processes together :: Edd&#39;s blog">
+<meta property="og:description" content="You are familiar with basic concept of Elixir/Erlang processes and you want to take a step further." />
+<meta property="og:url" content="/posts/2015-11-12-links-in-elixir/" />
+<meta property="og:site_name" content="Linking Elixir processes together" />
+
+  
+    <meta property="og:image" content="/img/favicon/green.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2015-11-12 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Edd&#39;s blog
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/cv.html">Hire me</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/cv.html">Hire me</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/posts/2015-11-12-links-in-elixir/">Linking Elixir processes together</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2015-11-12
+    </span>
+    
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h2 id="intro">Intro<a href="#intro" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>If you actually don&rsquo;t know much about Elixir processes but you already learned something about Elixir checkout [my post about processes]({% post_url 2015-10-22-elixir-pingpong-table %}) and come back afterwords. I assume that you know how <strong>spawn/1</strong> and <strong>spawn/3</strong> work and you know basic concepts around process communication.</p>
+<h2 id="connecting-processes-together">Connecting processes together.<a href="#connecting-processes-together" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>It is very common that processes are somehow related to each other, we also know that they do not share state. Right now you should be asking: <strong>&ldquo;How to make sure that life of process depends on another?&quot;</strong>. Erlang provides mechanism called linking. In Elixir we can use it by calling <strong>spawn_link</strong>. Let&rsquo;s check what docs have to say about that function.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir"><span style="color:#66d9ef">def</span> spawn_link(fun)
+
+<span style="color:#a6e22e">Spawns</span> the given function, links it to the current process <span style="color:#f92672">and</span> returns its pid<span style="color:#f92672">.</span>
+
+<span style="color:#a6e22e">Check</span> the <span style="color:#a6e22e">Process</span> <span style="color:#f92672">and</span> <span style="color:#a6e22e">Node</span> modules <span style="color:#66d9ef">for</span> other functions to handle processes,
+including spawning functions <span style="color:#f92672">in</span> nodes<span style="color:#f92672">.</span>
+
+<span style="color:#a6e22e">Inlined</span> by the compiler<span style="color:#f92672">.</span>
+
+<span style="color:#a6e22e">Examples</span>
+
+<span style="color:#960050;background-color:#1e0010">┃</span> current <span style="color:#f92672">=</span> self()
+<span style="color:#960050;background-color:#1e0010">┃</span> child   <span style="color:#f92672">=</span> spawn_link(<span style="color:#66d9ef">fn</span> <span style="color:#f92672">-&gt;</span> send current, {self(), <span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>} <span style="color:#66d9ef">end</span>)
+<span style="color:#960050;background-color:#1e0010">┃</span>
+<span style="color:#960050;background-color:#1e0010">┃</span> <span style="color:#66d9ef">receive</span> <span style="color:#66d9ef">do</span>
+<span style="color:#960050;background-color:#1e0010">┃</span>   {<span style="color:#f92672">^</span>child, <span style="color:#ae81ff">3</span>} <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">IO</span><span style="color:#f92672">.</span>puts <span style="color:#e6db74">&#34;Received 3 back&#34;</span>
+<span style="color:#960050;background-color:#1e0010">┃</span> <span style="color:#66d9ef">end</span>
+</code></pre></div><p>In my opinion, that description is quite vage, so let&rsquo;s put to the test.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir">iex(<span style="color:#ae81ff">4</span>)<span style="color:#f92672">&gt;</span> child   <span style="color:#f92672">=</span> spawn_link(<span style="color:#66d9ef">fn</span> <span style="color:#f92672">-&gt;</span> send current, {self(), <span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>} <span style="color:#66d9ef">end</span>)
+<span style="color:#75715e">#PID&lt;0.65.0&gt;</span>
+iex(<span style="color:#ae81ff">5</span>)<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">receive</span> <span style="color:#66d9ef">do</span>
+...(<span style="color:#ae81ff">5</span>)<span style="color:#f92672">&gt;</span>   {<span style="color:#f92672">^</span>child, <span style="color:#ae81ff">3</span>} <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">IO</span><span style="color:#f92672">.</span>puts <span style="color:#e6db74">&#34;Received 3 back&#34;</span>
+...(<span style="color:#ae81ff">5</span>)<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">end</span>
+<span style="color:#a6e22e">Received</span> <span style="color:#ae81ff">3</span> back
+<span style="color:#e6db74">:ok</span>
+iex(<span style="color:#ae81ff">6</span>)<span style="color:#f92672">&gt;</span>
+</code></pre></div><p>We received 3, which is OK, but</p>
+<blockquote>
+<p>Q: what if we call spawn instead of spawn_link?</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir">iex(<span style="color:#ae81ff">1</span>)<span style="color:#f92672">&gt;</span> current <span style="color:#f92672">=</span> self()
+<span style="color:#75715e">#PID&lt;0.57.0&gt;</span>
+iex(<span style="color:#ae81ff">2</span>)<span style="color:#f92672">&gt;</span> child   <span style="color:#f92672">=</span> spawn(<span style="color:#66d9ef">fn</span> <span style="color:#f92672">-&gt;</span> send current, {self(), <span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>} <span style="color:#66d9ef">end</span>)
+<span style="color:#75715e">#PID&lt;0.60.0&gt;</span>
+iex(<span style="color:#ae81ff">3</span>)<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">receive</span> <span style="color:#66d9ef">do</span>
+...(<span style="color:#ae81ff">3</span>)<span style="color:#f92672">&gt;</span>   {<span style="color:#f92672">^</span>child, <span style="color:#ae81ff">3</span>} <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">IO</span><span style="color:#f92672">.</span>puts <span style="color:#e6db74">&#34;Received 3 back&#34;</span>
+...(<span style="color:#ae81ff">3</span>)<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">end</span>
+<span style="color:#a6e22e">Received</span> <span style="color:#ae81ff">3</span> back
+<span style="color:#e6db74">:ok</span>
+</code></pre></div><blockquote>
+<p>Q: The result is exactly the same, so what is the exact purpose of <strong>spawn_link</strong> then?</p>
+</blockquote>
+<blockquote>
+<p>A: The answer is: &ldquo;Error handling&rdquo;</p>
+</blockquote>
+<p>Or to be more specific: &ldquo;spawn_link will notify linked process about abnormal exit reason for the dependent process&rdquo;. But before going any deeper we need to really understand what actually happens when process finishes its work.</p>
+<h2 id="when-process-ends">When process ends<a href="#when-process-ends" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p><img src="/images/meme_oracle_happens_for_a_reason.jpg" alt="oracle matrix meme">
+When a process finishes its work, it exits. It is a different mechanism than exceptions and with it we can detect when something wrong (or unexpected) happens. When process finishes its work it implicitly calls <strong>exit(:normal)</strong> to communicate with its parent that job has been done. Every other argument to exit/1 than <strong>:normal</strong> is treated as an error. You should also know that Elixir shell is a process as well, so you should be able to link to it as well.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir">iex(<span style="color:#ae81ff">1</span>)<span style="color:#f92672">&gt;</span> spawn_link(<span style="color:#66d9ef">fn</span> <span style="color:#f92672">-&gt;</span> exit(<span style="color:#e6db74">:normal</span>) <span style="color:#66d9ef">end</span>)
+<span style="color:#75715e">#PID&lt;0.104.0&gt;</span>
+iex(<span style="color:#ae81ff">2</span>)<span style="color:#f92672">&gt;</span> spawn(<span style="color:#66d9ef">fn</span> <span style="color:#f92672">-&gt;</span> exit(<span style="color:#e6db74">:normal</span>) <span style="color:#66d9ef">end</span>)
+<span style="color:#75715e">#PID&lt;0.106.0&gt;</span>
+</code></pre></div><p>So far there are no changes between <strong>spawn/1</strong> and <strong>spawn_link/1</strong>, that is because we exit the process with <strong>:normal</strong> reason. But what would happen for other reasons?</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir">{iex(<span style="color:#ae81ff">1</span>)<span style="color:#f92672">&gt;</span> spawn(<span style="color:#66d9ef">fn</span> <span style="color:#f92672">-&gt;</span> exit(<span style="color:#e6db74">:oh_no_i_did_something_wrong</span>) <span style="color:#66d9ef">end</span>)
+<span style="color:#75715e">#PID&lt;0.114.0&gt;</span>
+iex(<span style="color:#ae81ff">2</span>)<span style="color:#f92672">&gt;</span> spawn_link(<span style="color:#66d9ef">fn</span> <span style="color:#f92672">-&gt;</span> exit(<span style="color:#e6db74">:oh_no_i_did_something_wrong</span>) <span style="color:#66d9ef">end</span>)
+<span style="color:#f92672">**</span> (<span style="color:#a6e22e">EXIT</span> from <span style="color:#75715e">#PID&lt;0.112.0&gt;) :oh_no_i_did_something_wrong</span>
+
+<span style="color:#a6e22e">Interactive</span> <span style="color:#a6e22e">Elixir</span> (<span style="color:#ae81ff">1.1</span><span style="color:#f92672">.</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">-</span> press <span style="color:#a6e22e">Ctrl</span><span style="color:#f92672">+</span><span style="color:#a6e22e">C</span> to exit (type h() <span style="color:#a6e22e">ENTER</span> <span style="color:#66d9ef">for</span> help)
+iex(<span style="color:#ae81ff">1</span>)<span style="color:#f92672">&gt;</span>
+</code></pre></div><p>BINGO! Our shell processes does not catch <strong>:EXIT</strong> message, so link propagates the exit reason further to the process that observers elixir shell. The &ldquo;observer&rdquo; catches the error and restarts the shell process. But how to actually handle exit messages from linked processes?</p>
+<h2 id="trapping-exists">Trapping exists<a href="#trapping-exists" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Now that we know how to track exits from linked processes, the question is:</p>
+<blockquote>
+<p>Q: How to actually react to failures of linked processes?</p>
+</blockquote>
+<blockquote>
+<p>A: trap_exit</p>
+</blockquote>
+<p>Each process can be flagged, meaning you can customize its properties like minimal heap size, priority level, <strong>trapping</strong> and many more advanced things. <a href="http://www.erlang.org/doc/man/erlang.html#process_flag-2">Erlang&rsquo;s documentation lists them all</a>. The most interesting part is this:</p>
+<blockquote>
+<p>Setting trapping flag to true means that, exit signals arriving to a process are converted to <strong>{&lsquo;EXIT&rsquo;, from, reason}</strong> messages, which can be received as ordinary messages. If trap_exit is set to false, the process exits if it receives an exit signal other than normal and the exit signal is propagated to its linked processes. Application processes should normally not trap exits.</p>
+</blockquote>
+<p>So setting trapping flag is not a common thing, it is because OTP from Erlang provides special building blocks for managing failures of other processes - <strong>supervisors</strong>. I will describe them in the next blog post, but for the time being we will go against the wind which is what curious programmers like most. Let&rsquo;s start with trapping exists from linked processes by setting the proper flag.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir">iex(<span style="color:#ae81ff">2</span>)<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">Process</span><span style="color:#f92672">.</span>flag(<span style="color:#e6db74">:trap_exit</span>, <span style="color:#66d9ef">true</span>)
+<span style="color:#66d9ef">false</span>
+</code></pre></div><p>As it is said in the description, returned value is <strong>false</strong> which is a previous state of that flag. If you called it again it would return true. Now that we have trapping enabled let&rsquo;s link to the process which calculates 1 + 1 and finishes its work. We call flush afterwords to receive incoming messages to the shell process.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir">iex(<span style="color:#ae81ff">3</span>)<span style="color:#f92672">&gt;</span> spawn_link(<span style="color:#66d9ef">fn</span> <span style="color:#f92672">-&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">end</span>)
+<span style="color:#75715e">#PID&lt;0.145.0&gt;</span>
+iex(<span style="color:#ae81ff">4</span>)<span style="color:#f92672">&gt;</span> flush
+{<span style="color:#e6db74">:EXIT</span>, <span style="color:#75715e">#PID&lt;0.145.0&gt;, :normal}</span>
+<span style="color:#e6db74">:ok</span>
+</code></pre></div><p>Spawned process sends us <strong>{:EXIT, #PID&lt;0.145.0&gt;, :normal}</strong>. This means that process finishes its work without any problems. Now, let&rsquo;s replicate that behavior more explicitly.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir">iex(<span style="color:#ae81ff">5</span>)<span style="color:#f92672">&gt;</span> spawn_link(<span style="color:#66d9ef">fn</span> <span style="color:#f92672">-&gt;</span> exit(<span style="color:#e6db74">:normal</span>) <span style="color:#66d9ef">end</span>)
+<span style="color:#75715e">#PID&lt;0.164.0&gt;</span>
+iex(<span style="color:#ae81ff">6</span>)<span style="color:#f92672">&gt;</span> flush
+{<span style="color:#e6db74">:EXIT</span>, <span style="color:#75715e">#PID&lt;0.164.0&gt;, :normal}</span>
+<span style="color:#e6db74">:ok</span>
+</code></pre></div><p>Now let&rsquo;s try to exit the process with a message different then normal.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir">iex(<span style="color:#ae81ff">7</span>)<span style="color:#f92672">&gt;</span> spawn_link(<span style="color:#66d9ef">fn</span> <span style="color:#f92672">-&gt;</span> exit(<span style="color:#e6db74">:custom_reason</span>) <span style="color:#66d9ef">end</span>)
+<span style="color:#75715e">#PID&lt;0.167.0&gt;</span>
+iex(<span style="color:#ae81ff">8</span>)<span style="color:#f92672">&gt;</span> flush
+{<span style="color:#e6db74">:EXIT</span>, <span style="color:#75715e">#PID&lt;0.167.0&gt;, :custom_reason}</span>
+<span style="color:#e6db74">:ok</span>
+</code></pre></div><p>Great, we intercept exit call and statement such as</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir"><span style="color:#66d9ef">receive</span> <span style="color:#66d9ef">do</span>
+  {<span style="color:#e6db74">:EXIT</span>, pid, reason} <span style="color:#f92672">-&gt;</span> here we could react
+<span style="color:#66d9ef">end</span>
+</code></pre></div><p>gives us a way to react to processes exits. But what about exceptions? They cause processes to die too!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir">iex(<span style="color:#ae81ff">11</span>)<span style="color:#f92672">&gt;</span> spawn_link(<span style="color:#66d9ef">fn</span> <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">raise</span> <span style="color:#e6db74">&#34;uuuuups!&#34;</span> <span style="color:#66d9ef">end</span>)
+<span style="color:#75715e">#PID&lt;0.174.0&gt;</span>
+
+<span style="color:#ae81ff">22</span>:<span style="color:#ae81ff">28</span>:<span style="color:#ae81ff">14.246</span> [error] <span style="color:#a6e22e">Process</span> <span style="color:#75715e">#PID&lt;0.174.0&gt; raised an exception</span>
+<span style="color:#f92672">**</span> (<span style="color:#a6e22e">RuntimeError</span>) uuuuups!
+    <span style="color:#e6db74">:erlang</span><span style="color:#f92672">.</span>apply<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>
+iex(<span style="color:#ae81ff">12</span>)<span style="color:#f92672">&gt;</span> flush
+{<span style="color:#e6db74">:EXIT</span>, <span style="color:#75715e">#PID&lt;0.174.0&gt;,</span>
+ {<span style="color:#960050;background-color:#1e0010">\</span>%<span style="color:#a6e22e">RuntimeError</span>{<span style="color:#e6db74">message</span>: <span style="color:#e6db74">&#34;uuuuups!&#34;</span>}, [{<span style="color:#e6db74">:erlang</span>, <span style="color:#e6db74">:apply</span>, <span style="color:#ae81ff">2</span>, []}]}}
+<span style="color:#e6db74">:ok</span>
+</code></pre></div><p>Great, exceptions are trapped as well. We could react to them during processes exists.</p>
+<h2 id="visualizing-links">Visualizing links<a href="#visualizing-links" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Now that we have some knowledge about links, i&rsquo;ll show a visualization of simple demo. LinksTest module creates a chain of linked processes and then tracks their exits.</p>
+<p>Here is the code:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir"><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">LinksTest</span> <span style="color:#66d9ef">do</span>
+  <span style="color:#66d9ef">def</span> chain <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">do</span>
+    <span style="color:#a6e22e">IO</span><span style="color:#f92672">.</span>puts <span style="color:#e6db74">&#34;chain called with 0, wating 2000 ms before exit&#34;</span>
+    <span style="color:#e6db74">:timer</span><span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">2000</span>)
+    exit(<span style="color:#e6db74">:chain_breaks_here</span>)
+  <span style="color:#66d9ef">end</span>
+
+  <span style="color:#66d9ef">def</span> chain n <span style="color:#66d9ef">do</span>
+    <span style="color:#a6e22e">Process</span><span style="color:#f92672">.</span>flag(<span style="color:#e6db74">:trap_exit</span>, <span style="color:#66d9ef">true</span>)
+    <span style="color:#a6e22e">IO</span><span style="color:#f92672">.</span>puts <span style="color:#e6db74">&#34;chain called with </span><span style="color:#e6db74">#{</span>n<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#e6db74">:timer</span><span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1000</span>)
+    spawn_link(__MODULE__, <span style="color:#e6db74">:chain</span>, [n<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
+    <span style="color:#66d9ef">receive</span> <span style="color:#66d9ef">do</span>
+      {<span style="color:#e6db74">:EXIT</span>, pid, reason} <span style="color:#f92672">-&gt;</span>
+        <span style="color:#e6db74">:timer</span><span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">500</span>)
+        <span style="color:#a6e22e">IO</span><span style="color:#f92672">.</span>puts <span style="color:#e6db74">&#34;Child process exits with reason </span><span style="color:#e6db74">#{</span>reason<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#66d9ef">end</span>
+  <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div><p>And here is the demo</p>
+<p><img src="/images/process_chain.gif" alt="chain demo"></p>
+<p>The interesting fact is that after exit with <strong>:chain_breaks_here</strong>, next exists are :normal. It is because the first process that catches :chain_breaks_here exit code consumes it and then exits normally, so the error is swallowed by the first process that catches it. If we didn&rsquo;t trap exits in the chain and exit in the last process normally (:normal), the process would not exit at all - links prevent this. In other words: <strong>When calling exit(:normal) the process will not finish, it will stay up</strong>. Let&rsquo;s demo that as well!</p>
+<p>Here is the code:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir"><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">LinksTestNoTrap</span> <span style="color:#66d9ef">do</span>
+  <span style="color:#66d9ef">def</span> chain <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">do</span>
+    <span style="color:#a6e22e">IO</span><span style="color:#f92672">.</span>puts <span style="color:#e6db74">&#34;normal exit in the last link&#34;</span>
+    exit(<span style="color:#e6db74">:normal</span>)
+  <span style="color:#66d9ef">end</span>
+
+  <span style="color:#66d9ef">def</span> chain n <span style="color:#66d9ef">do</span>
+    <span style="color:#a6e22e">IO</span><span style="color:#f92672">.</span>puts <span style="color:#e6db74">&#34;create link in a chain no. </span><span style="color:#e6db74">#{</span>n<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    spawn_link(__MODULE__, <span style="color:#e6db74">:chain</span>, [n<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
+    <span style="color:#66d9ef">receive</span> <span style="color:#66d9ef">do</span>
+      msg <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">IO</span><span style="color:#f92672">.</span>puts <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">#{</span>n<span style="color:#e6db74">}</span><span style="color:#e6db74"> received </span><span style="color:#e6db74">#{</span>msg<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#66d9ef">end</span>
+  <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div><p>And here is the demo</p>
+<p><img src="/images/process_chain_no_break.gif" alt="chain demo"></p>
+<h2 id="links-are-bidirectional">Links are bidirectional<a href="#links-are-bidirectional" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p><img src="/images/3_musketeers_links.jpg" alt="oracle matrix meme"></p>
+<p>So far we have been killing processes that are children of other processes. The question is:</p>
+<blockquote>
+<p>Q: If I kill the parent, do links break then?</p>
+</blockquote>
+<blockquote>
+<p>A: Yes, links are bidirectional</p>
+</blockquote>
+<p>Let&rsquo;s create a tree of processes and kill the root of that tree:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir"><span style="color:#66d9ef">defmodule</span> <span style="color:#a6e22e">Bidirectional</span> <span style="color:#66d9ef">do</span>
+  <span style="color:#66d9ef">def</span> leaf name <span style="color:#66d9ef">do</span>
+    <span style="color:#66d9ef">receive</span> <span style="color:#66d9ef">do</span>
+      msg <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">IO</span><span style="color:#f92672">.</span>puts <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">#{</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> received </span><span style="color:#e6db74">#{</span>msg<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#66d9ef">end</span>
+  <span style="color:#66d9ef">end</span>
+
+  <span style="color:#66d9ef">def</span> node name <span style="color:#66d9ef">do</span>
+    spawn_link __MODULE__, <span style="color:#e6db74">:leaf</span>, [<span style="color:#e6db74">&#34;node: </span><span style="color:#e6db74">#{</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> first leaf&#34;</span>]
+    spawn_link __MODULE__, <span style="color:#e6db74">:leaf</span>, [<span style="color:#e6db74">&#34;node: </span><span style="color:#e6db74">#{</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> second leaf&#34;</span>]
+    spawn_link __MODULE__, <span style="color:#e6db74">:leaf</span>, [<span style="color:#e6db74">&#34;node: </span><span style="color:#e6db74">#{</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> third leaf&#34;</span>]
+    <span style="color:#66d9ef">receive</span> <span style="color:#66d9ef">do</span>
+      msg <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">IO</span><span style="color:#f92672">.</span>puts <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">#{</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> received </span><span style="color:#e6db74">#{</span>msg<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#66d9ef">end</span>
+  <span style="color:#66d9ef">end</span>
+
+  <span style="color:#66d9ef">def</span> kernel <span style="color:#66d9ef">do</span>
+    spawn_link __MODULE__, <span style="color:#e6db74">:node</span>, [<span style="color:#e6db74">&#34;first node&#34;</span>]
+    spawn_link __MODULE__, <span style="color:#e6db74">:node</span>, [<span style="color:#e6db74">&#34;second node&#34;</span>]
+    <span style="color:#66d9ef">receive</span> <span style="color:#66d9ef">do</span>
+      msg <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">IO</span><span style="color:#f92672">.</span>puts <span style="color:#e6db74">&#34;kernel received </span><span style="color:#e6db74">#{</span>msg<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#66d9ef">end</span>
+  <span style="color:#66d9ef">end</span>
+
+  <span style="color:#66d9ef">def</span> create_graph <span style="color:#66d9ef">do</span>
+    spawn_link __MODULE__, <span style="color:#e6db74">:kernel</span>, []
+  <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div><p>The code is fairly simple, create_graph function creates a kernel process, which spawns and link 2 node processes and each node creates 3 leafs. Then we kill the kernel PID and see what is going to happen. Hard to imagine? Let&rsquo;s visualize that!</p>
+<p><img src="/images/links_on_a_tree.gif" alt="bidirectional links demo"></p>
+<p>Everything happens as planned and the entire tree is killed. Death of the kernel process causes a chain reaction and everything dies. Even our shell which is linked with the kernel dies as well!</p>
+
+      </div></div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      <span class="button previous">
+        <a href="/posts/2017-04-06-design-and-engineering/">
+          <span class="button__icon">←</span>
+          <span class="button__text">Design and Code</span>
+        </a>
+      </span>
+      
+      
+      <span class="button next">
+        <a href="/posts/2015-10-22-elixir-pingpong-table/">
+          <span class="button__text">My discoveries about Elixir processes</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

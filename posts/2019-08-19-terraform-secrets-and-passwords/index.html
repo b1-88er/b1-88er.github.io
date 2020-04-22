@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Storing secrets in terraform codebase with KMS :: Edd&#39;s blog — Personal blog</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="How to store sensitive data like passwords within repo when using terraform. Simple solution for AWS users." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="/posts/2019-08-19-terraform-secrets-and-passwords/" />
+
+
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+  <link rel="stylesheet" href="/assets/green.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+<meta name="twitter:creator" content="" />
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Storing secrets in terraform codebase with KMS :: Edd&#39;s blog">
+<meta property="og:description" content="How to store sensitive data like passwords within repo when using terraform. Simple solution for AWS users." />
+<meta property="og:url" content="/posts/2019-08-19-terraform-secrets-and-passwords/" />
+<meta property="og:site_name" content="Storing secrets in terraform codebase with KMS" />
+
+  
+    <meta property="og:image" content="/img/favicon/green.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2019-08-19 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Edd&#39;s blog
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/cv.html">Hire me</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/cv.html">Hire me</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/posts/2019-08-19-terraform-secrets-and-passwords/">Storing secrets in terraform codebase with KMS</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2019-08-19
+    </span>
+    
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h1 id="problem">Problem<a href="#problem" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>Some terraform resources require passing sensitive data such as passwords and ssh keys.
+When runing operation within a team, this quickly becomes a problem.
+Git is a decentralized way of storing data and having your passwords in plaintext is a sub-optimal idea.
+Even when using private git repositories, you still have passwords on each machine that has access to the repo.
+The approach I suggest is tested within mid/big AWS environment.
+It has some overhead, but I tried to reduce it to a minimum.</p>
+<h1 id="kms">KMS<a href="#kms" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p><a href="https://aws.amazon.com/kms/">AWS KMS</a> is conceptually a private key that is bound to IAM.
+It is quite convinient in a lot use cases.
+Here you can utilize it, to store sensitive data within terraform code.
+You can provision your first KMS with <a href="https://www.terraform.io/docs/providers/aws/r/kms_key.html">terraform as well</a>.
+Each KMS has it&rsquo;s own unique key id that you use to encrypt your secrets.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ aws kms encrypt --key-id <span style="color:#f92672">{</span>KEY_ID<span style="color:#f92672">}</span> --plaintext <span style="color:#f92672">{</span>YOUR_SECRET<span style="color:#f92672">}</span> --output text --query CiphertextBlob
+
+AQICANlZ<span style="color:#f92672">[</span>....<span style="color:#f92672">]</span>iqI75UTD9MqqkyzCrbkkQ<span style="color:#f92672">==</span>
+</code></pre></div><p>The output is encrypted version of your secret that can be stored in git repository.</p>
+<h1 id="kms-data-provider">KMS data provider<a href="#kms-data-provider" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>Once you know how to create KMS key and encrypt secrets, you can ingest them into other terraform resources.
+To do, it use <a href="https://www.terraform.io/docs/providers/aws/d/kms_secrets.html">aws_kms_secrets</a> data provider.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-terraform" data-lang="terraform"><span style="color:#66d9ef">data</span> <span style="color:#e6db74">&#34;aws_kms_secrets&#34;</span> <span style="color:#e6db74">&#34;secrets&#34;</span> {
+  <span style="color:#a6e22e">secret</span> {
+        <span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;master-password&#34;</span>,
+        <span style="color:#a6e22e">payload</span> = <span style="color:#e6db74">&#34;AQECAHgaPa0J8WadplGCqqVAr4H....&#34;</span>
+  }
+}
+
+<span style="color:#a6e22e">master_password</span> = <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>data.<span style="color:#a6e22e">aws_kms_secrets</span>.<span style="color:#a6e22e">secrets</span>.<span style="color:#a6e22e">plaintext</span>[<span style="color:#e6db74">&#34;master-password&#34;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</code></pre></div><p>Data provider does the decryption.
+You don&rsquo;t need to provide the key id because it is already a part of the encrypted text.
+When calling terraform, provide AWS credentials that are allowed to decrypt given secret.
+There is a <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html">number of ways to do it</a>.
+I recommend using <code>AWS_PROFILE</code> env variable as:</p>
+<pre><code>$ AWS_PROFILE=myprofile terraform apply
+</code></pre><p>Again, myprofile IAM user needs to have access to decryption within a given key.
+<a href="https://docs.aws.amazon.com/kms/latest/developerguide/iam-policies.html#iam-policy-example-encrypt-decrypt-specific-cmks">AWS has that documented as well</a></p>
+<h1 id="secrets-manager">Secrets manager.<a href="#secrets-manager" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>AWS also has a service <a href="https://aws.amazon.com/secrets-manager/">AWS Secrets Manager</a>.
+It is richer in features than KMS and terraform also <a href="https://www.terraform.io/docs/providers/aws/r/secretsmanager_secret.html">covers it</a>.
+You can specify password rotation policies and group passwords together.
+The reason why I don&rsquo;t like this approach is that changes in your secrets are not visibile in git.
+This makes harder to track what changed and who made the change.
+The solution also feels too complex for my day-to-day needs.</p>
+<h1 id="terraform-state">Terraform state<a href="#terraform-state" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>While your secrets are no longer in the terraform codebase, they are present in the plaintext form in the state file.
+If the state is stored in the git as well, entire approach with KMS is next to useless.
+State file contains full information on the <code>aws_kms_secrets</code> data provider.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#e6db74">&#34;data.aws_kms_secrets.secrets&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+    <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;aws_kms_secrets&#34;</span>,
+    <span style="color:#f92672">&#34;depends_on&#34;</span>: [],
+    <span style="color:#f92672">&#34;primary&#34;</span>: {
+        <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;{date}&#34;</span>,
+        <span style="color:#f92672">&#34;attributes&#34;</span>: {
+            <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;{date}&#34;</span>,
+            <span style="color:#f92672">&#34;plaintext.%&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>,
+            <span style="color:#f92672">&#34;plaintext.master_password&#34;</span>: <span style="color:#e6db74">&#34;PLAINTEXT_SECRET&#34;</span>,
+            <span style="color:#f92672">&#34;secret.#&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>,
+            <span style="color:#f92672">&#34;secret.3421790129.context.%&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>,
+            <span style="color:#f92672">&#34;secret.3421790129.grant_tokens.#&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>,
+            <span style="color:#f92672">&#34;secret.3421790129.name&#34;</span>: <span style="color:#e6db74">&#34;master_password&#34;</span>,
+            <span style="color:#f92672">&#34;secret.3421790129.payload&#34;</span>: <span style="color:#e6db74">&#34;AQICAHjxiIlAeQ/[...]&#34;</span>
+        },
+        <span style="color:#f92672">&#34;meta&#34;</span>: {},
+        <span style="color:#f92672">&#34;tainted&#34;</span>: <span style="color:#66d9ef">false</span>
+    },
+    <span style="color:#f92672">&#34;deposed&#34;</span>: [],
+    <span style="color:#f92672">&#34;provider&#34;</span>: <span style="color:#e6db74">&#34;provider.aws&#34;</span>
+}<span style="color:#960050;background-color:#1e0010">,</span>
+</code></pre></div><p>Luckily, you can store the state file outside the git repo <a href="https://www.terraform.io/docs/backends/types/s3.html">on s3 bucket</a>.
+I will write a separate post on storing the state with safe locking mechanisms.</p>
+
+      </div></div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      
+      <span class="button next">
+        <a href="/posts/2019-06-24-terraform-project-structure/">
+          <span class="button__text">Terraform production ready project structure</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Terraform production ready project structure :: Edd&#39;s blog — Personal blog</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="How to organise terrafrom project structure with terragrunt." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="/posts/2019-06-24-terraform-project-structure/" />
+
+
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+  <link rel="stylesheet" href="/assets/green.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+<meta name="twitter:creator" content="" />
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Terraform production ready project structure :: Edd&#39;s blog">
+<meta property="og:description" content="How to organise terrafrom project structure with terragrunt." />
+<meta property="og:url" content="/posts/2019-06-24-terraform-project-structure/" />
+<meta property="og:site_name" content="Terraform production ready project structure" />
+
+  
+    <meta property="og:image" content="/img/favicon/green.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2019-06-24 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Edd&#39;s blog
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/cv.html">Hire me</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/cv.html">Hire me</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/posts/2019-06-24-terraform-project-structure/">Terraform production ready project structure</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2019-06-24
+    </span>
+    
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <p><a href="https://www.terraform.io/intro/index.html">Terraform</a> is becoming a standard in managing a infrastructure as code.
+List of <a href="https://www.terraform.io/docs/providers/index.html">providers</a> is growing like never before.
+It is fairly easy to drink too much cool-aid.
+While it is a very powerful tool, it has limitations.
+Some of them can be solved easily, some require obscure hacks.
+Terraform is relatively young and it misses some critical tooling, that you need to create on your own.
+In this post I will show how to <em>structure</em> a terraform code base to manage multiple environments.
+Most of the solutions revolve around <a href="https://github.com/gruntwork-io/terragrunt">terragrunt</a>.
+It is a thin wrapper for Terraform that provides extra tools for working with multiple Terraform modules.</p>
+<h2 id="terraform-up-and-running">Terraform up and running<a href="#terraform-up-and-running" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>If you have not read <a href="https://www.terraformupandrunning.com/">terraform up and running</a> book, do it.
+Even if you think you know how to use terraform.
+The most important chapter are:</p>
+<ul>
+<li>How to manage terraform state</li>
+<li>Creating reusable modules</li>
+<li>How to use terraform as a team</li>
+</ul>
+<p>I will cover some of these issues in this post as well.</p>
+<h2 id="modules-and-pins">Modules and pins<a href="#modules-and-pins" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Any sane company has more than one environment.
+Usually it looks like: <code>production, staging, dev</code>.
+Environments come and go, change over time.
+If you manage them, one of your goals is to keep in them aligned.
+Have some key parameters such as instance types, volume sizes different.
+The architecture should stay the same.
+Updating set of clusters should be as easy as updating a single one.</p>
+<p>To avoid code duplication use <a href="https://www.terraform.io/docs/configuration/modules.html">terraform modules</a>.</p>
+<p>This way you can reuse the code you write across multiple environments.
+Terraform documentation is pretty good at explaining what they are, so I won&rsquo;t be writing much about it here.
+What you should be aware of is that modules can be <em>Pinned</em> to a specific version.
+Meaning, when you provide source, it can be git repository url with a <code>ref</code> tag specified.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-terraform" data-lang="terraform"><span style="color:#66d9ef">module</span> <span style="color:#e6db74">&#34;vpc&#34;</span> {
+  <span style="color:#a6e22e">source</span> = <span style="color:#e6db74">&#34;git::https://example.com/vpc.git?ref=v1.2.0&#34;</span>
+}
+</code></pre></div><p>This way you can gradually upgrade your clusters by upgrading from dev to staging and later to prod.
+Real question is:</p>
+<blockquote>
+<p>I am supposed to manage my entire cluster with a single module or use multiple ones?</p>
+</blockquote>
+<p>Having a global module per cluster might not be a terrible idea if your infrastructure is fairly simple.
+If you grow in complexity, you want to separate modules and their instantiation.</p>
+<ol>
+<li>If something goes wrong, it goes wrong in the entire cluster.</li>
+<li>You can do only one change on the cluster in parallel. If you use <a href="https://www.terraform.io/docs/state/locking.html">state locking</a> it will result in an error. If not, risk of damaging the cluster state is quite big.</li>
+<li>You risk creating modules that are hard to reason about. This is the same antipattern as creating a single class to manage entire project.</li>
+</ol>
+<h2 id="project-structure-with-fine-grained-modules">Project structure with fine grained modules<a href="#project-structure-with-fine-grained-modules" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>If you are using cloud provider such as AWS or Google Cloud, you know that resources are created &ldquo;per&rdquo; anything.
+For example:</p>
+<ul>
+<li>IAM users or s3 buckets are global at the account level</li>
+<li>ECR repos are created per region</li>
+<li>RDS, ECS clusters are per VPC/cluster</li>
+</ul>
+<p>So we need to be able to create resources per cluster/environment, but also some globally shared resources among clusters.
+With terragrunt you can <a href="https://github.com/gruntwork-io/terragrunt#motivation">can create a tree structure</a> that will describe your needs.
+In my case, nested level are:</p>
+<ul>
+<li>aws account</li>
+<li>aws region</li>
+<li>cluster name</li>
+</ul>
+<p>Each one of these levels can have their own <code>_global</code> directory, that will hold global state per <code>account/region/cluster</code>.
+The directory structure for my terraform code looks like this:</p>
+<pre><code>$ tree -d -L 3
+├── dev
+│   ├── _global
+│   ├── ap-southeast-2
+│   │   ├── _global
+│   │   ├── mgmt
+│   │   └── dev
+│   └── eu-west-1
+│       ├── _global
+│       ├── mgmt
+│       ├── staging
+│       ├── dev1
+│       └── dev2
+└── prod
+    ├── _global
+    ├── ap-southeast-2
+    │   ├── _global
+    │   ├── prod
+    │   └── mgmt
+    └── us-east-1
+        ├── _global
+        ├── prod
+        └── mgmt
+</code></pre><p>Each directory here creates a workspace where given terraform modules can be instantiated.
+Hierarchy allows customization on any level with variables propagating to lower levels to avoid duplication.</p>
+<p>As mentioned, some modules get provisioned per cluster. Grouping is per <code>data-stores, networking, services</code> etc.
+Structure for a specific <em>dev1</em> cluster.</p>
+<pre><code>$ tree -d -L 3
+dev1
+├── data-stores
+│   ├── rds-db
+│   ├── rds-other-db
+│   └── s3-buckets
+├── kms-key
+├── logging
+├── networking
+│   ├── albs
+│   └── route53
+├── services
+│   ├── service1
+│   ├── service2
+│   ├── service3
+│   ├── service4
+│   └── ecs-cluster
+└── vpc
+</code></pre><h2 id="terragrunt-module-instantiation">Terragrunt module instantiation<a href="#terragrunt-module-instantiation" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Each directory we listed so far contain single <code>*.tfvars</code> file.</p>
+<pre><code>$ ls dev/eu-west-1/dev1/services/service1/
+terraform.tfvars
+</code></pre><p>This file provisions a given terraform module</p>
+<pre><code>terragrunt = {
+  terraform {
+    source = &quot;git::git@github.com:github-account/repo-name.git//services/service1?ref=given-tag&quot;
+  }
+  include = {
+    path = &quot;${find_in_parent_folders()}&quot;
+  }
+  dependencies = {
+    paths = [&quot;../ecs-cluster&quot;]
+  }
+}
+
+cpu                       = 128
+memory                    = 200
+desired_number_of_tasks   = 2
+alb_listener_custom_rules = [
+  {
+    port     = 443,
+    path     = &quot;/*&quot;,
+    host     = &quot;foo.com&quot;,
+    priority = 250,
+  },
+  {
+    port     = 80,
+    path     = &quot;/*&quot;,
+    host     = &quot;foo.com&quot;,
+    priority = 251,
+  }
+]
+
+</code></pre><p>In the snippet above you can see <code>terragrunt</code> bracket block that describes the module to setup.
+Outside brackets are variables passed into the module.
+There is <a href="https://github.com/gruntwork-io/terragrunt#motivation-2">a lot you can customize for terragrunt configuration</a>.
+You can pass env variables, arguments to terraform, add tfvar files</p>
+<h3 id="propagating-variables-from-higher-levels">Propagating variables from higher levels<a href="#propagating-variables-from-higher-levels" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>There are variables that are constant at some level and you don&rsquo;t want to replicate them.
+For example, when you use multiple aws accounts, you have to name them and keep the name consistent.
+For this you can define <code>account.tfvars</code> file with contents like bellow.</p>
+<pre><code>aws_account_name = &quot;dev&quot;
+</code></pre><p>This variable should be automatically passed to any terraform module that gets created in directory lower in hierarchy.
+This doesn&rsquo;t happen automatically though.
+In the snippet above each module gets created with <a href="https://github.com/gruntwork-io/terragrunt#find_in_parent_folders">find_in_parent_folders</a>.
+This causes terragrunt to search <code>*tfvars</code> files higher in the directory structure.
+Lets create a <code>terraform.tfvars</code> file at the root (account level) of the hierarchy.</p>
+<pre><code>terragrunt = {
+  terraform {
+    extra_arguments &quot;common_vars&quot; {
+      commands = [&quot;${get_terraform_commands_that_need_vars()}&quot;]
+      optional_var_files = [
+        &quot;${get_tfvars_dir()}/${find_in_parent_folders(&quot;account.tfvars&quot;, &quot;skip-account-if-does-not-exist&quot;)}&quot;,
+        &quot;${get_tfvars_dir()}/${find_in_parent_folders(&quot;region.tfvars&quot;, &quot;skip-region-if-does-not-exist&quot;)}&quot;,
+        &quot;${get_tfvars_dir()}/${find_in_parent_folders(&quot;env.tfvars&quot;, &quot;skip-env-if-does-not-exist&quot;)}&quot;,
+        &quot;${get_tfvars_dir()}/terraform.tfvars&quot;
+      ]
+    }
+  }
+}
+</code></pre><p>This file will cause terragrunt to include <code>account.tfvars</code>, <code>region.tfvars</code>, <code>env.tfvars</code> when needed.
+This way, variable <code>aws_account_name</code> doesn&rsquo;t have to copy-pasted each time when it is needed.</p>
+<h2 id="whats-next">What&rsquo;s next?<a href="#whats-next" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>If you want to organize your terraform project as shown, check out <a href="https://github.com/gruntwork-io/terragrunt#keep-your-terraform-code-dry">terragrunt docs on keeping the code DRY</a>.
+If you have any questions or need help, don&rsquo;t be afraid to ask in the comments :)</p>
+
+      </div></div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      <span class="button previous">
+        <a href="/posts/2019-08-19-terraform-secrets-and-passwords/">
+          <span class="button__icon">←</span>
+          <span class="button__text">Storing secrets in terraform codebase with KMS</span>
+        </a>
+      </span>
+      
+      
+      <span class="button next">
+        <a href="/posts/2019-06-05-finding-local-extreams-in-pandas-time-series/">
+          <span class="button__text">Peaks in pandas Time Series.</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

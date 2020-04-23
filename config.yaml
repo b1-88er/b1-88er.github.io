@@ -36,9 +36,6 @@ languages:
 
     menu:
       main:
-      - identifier: about
-        name: About
-        url: /about
-      - identifier: showcase
-        name: Showcase
-        url: /showcase
+      - identifier: cv
+        name: Hire me
+        url: /cv.html

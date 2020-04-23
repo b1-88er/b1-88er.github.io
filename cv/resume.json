@@ -35,10 +35,20 @@
   },
   "work": [
     {
+      "company": "Klarna Bank AB (Remote)",
+      "position": "DevOps Architect",
+      "wesdbsite": "https://klarna.com",
+      "startDate": "2020-01-06",
+      "summary": "",
+      "highlights": []
+
+    },
+    {
       "company": "FieldAware (Remote)",
       "position": "DevOps team lead",
       "wesdbsite": "https://fieldaware.com",
       "startDate": "2015-03-01",
+      "endDate": "2019-12-31",
       "summary": "Joined as Senior Software Engineer. Focused on refactoring the monolith into service based architecture. Changed the direction to DevOps role and DevOps team lead.",
       "highlights": [
   "Work on AWS infrastructure: EC2, ECS, IAM, S3, KMS, CloudWatch, Lambda, RDS, Dynamo, VPC, Route53 etc.",

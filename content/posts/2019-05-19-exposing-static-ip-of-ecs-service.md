@@ -27,7 +27,7 @@ Outline:
 * NLB passes traffic to the target group, which points to ECS service that runs nginx proxy.
 * Nginx server uses `PROXY_PASS` derective to pass traffic to public ALB.
 
-![architecture]({{ site.baseurl }}/images/nlb-alb-ecs-aws-architecture.svg){:height="800" .absolute-center}
+![architecture](/images/nlb-alb-ecs-aws-architecture.svg)
 
 ## Code
 
@@ -118,7 +118,7 @@ This code is for educational purpose, clone it a refine it for your needs.
 And give me maybe a star on github ;)
 
 ### Proxy ECS Service
-![ecs-service](/images/nlb-ecs-nginx.png){:height="250" width="250" .absolute-center}
+![ecs-service](/images/nlb-ecs-nginx.png)
 
 To pass the traffic to the target service, provision the container above as a simple ecs service.
 The entire [ECS part is on github](https://github.com/eddwardo/nlb-alb-ecs-service/blob/master/ecs_service.tf).
@@ -174,7 +174,7 @@ resource "aws_ecs_task_definition" "task" {
 
 ### Networking
 
-![nlb-listener](/images/nlb-networking.png){:height="400" width="400" .absolute-center}
+![nlb-listener](/Anlb-networking.png){:height="400" width="400" .absolute-center}
 
 [Click on this, to get the full code for the module](https://github.com/eddwardo/nlb-alb-ecs-service/blob/master/nlb.tf)
 

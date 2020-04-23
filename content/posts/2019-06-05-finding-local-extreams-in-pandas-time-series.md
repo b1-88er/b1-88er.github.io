@@ -54,7 +54,7 @@ df.price.plot(figsize=(20,8));
 ```
 
 
-![png]({{ site.base_url }}/images/maxmin/output_2_0.png)
+![png](/images/maxmin/output_2_0.png)
 
 
 ### Finding indexes for extreams with scipy and argrelextrema
@@ -93,7 +93,7 @@ df.iloc[ilocs_min].price.plot(style='.', lw=10, color='green', marker="^");
 ```
 
 
-![png]({{ site.base_url }}/images/maxmin/output_3_0.png)
+![png](/images/maxmin/output_3_0.png)
 
 ### How to update DataFrame with found peaks
 Now that we know how to get the peaks in the time series, it is time to learn how to include the results in the DataFrame.
@@ -178,6 +178,6 @@ df[df['weekly_min']].price.plot(style='.', lw=10, color='green', marker="^");
 
 
 Plot generated from updated DataFrame is the same as the one created by `df.iloc[ilocs_max].price.plot()`. This is a good confirmation that DataFrame has been updated properly.
-![png]({{ site.base_url }}/images/maxmin/output_5_1.png)
+![png](/images/maxmin/output_5_1.png)
 
 I hope it helped you and saved you some time. Cheers!

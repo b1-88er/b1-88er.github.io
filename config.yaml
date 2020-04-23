@@ -4,7 +4,6 @@ baseUrl: /
 languageCode: en-us
 theme: terminal
 paginate: 5
-contentDir: posts
 
 params:
   # dir name of your blog content (default is `content/posts`)

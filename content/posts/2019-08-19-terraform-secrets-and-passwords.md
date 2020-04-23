@@ -20,8 +20,9 @@ Here you can utilize it, to store sensitive data within terraform code.
 You can provision your first KMS with [terraform as well](https://www.terraform.io/docs/providers/aws/r/kms_key.html).
 Each KMS has it's own unique key id that you use to encrypt your secrets.
 
-```bash
+```shell
 $ aws kms encrypt --key-id {KEY_ID} --plaintext {YOUR_SECRET} --output text --query CiphertextBlob
+
 AQICANlZ[....]iqI75UTD9MqqkyzCrbkkQ==
 ```
 

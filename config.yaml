@@ -22,8 +22,8 @@ params:
 languages:
   en:
     languageName: English
-    title: Your site title
-    subtitle: Your site subtitle
+    title: Edd's blog
+    subtitle: Personal blog
     keywords: ''
     menuMore: Show more
     readMore: Read more
@@ -31,7 +31,7 @@ languages:
 
     params:
       logo:
-        logoText: Terminal
+        logoText: Edd's blog
         logoHomeLink: /
 
     menu:

@@ -1,5 +1,4 @@
 ---
-categories: terraform cloud iac
 date: "2019-06-24T00:00:00Z"
 summary: How to organise terrafrom project structure with terragrunt.
 title: Terraform production ready project structure

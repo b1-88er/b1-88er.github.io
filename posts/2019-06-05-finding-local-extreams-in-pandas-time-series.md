@@ -1,5 +1,4 @@
 ---
-categories: pandas timeseries
 date: "2019-06-05T00:00:00Z"
 summary: How to find peaks in pandas time series.
 title: Peaks in pandas Time Series.
@@ -27,7 +26,7 @@ import seaborn; seaborn.set()
 %matplotlib inline
 
 import datetime
-def dateparse (time_in_secs):    
+def dateparse (time_in_secs):
     return datetime.datetime.fromtimestamp(float(time_in_secs))
 
 df = pd.read_csv('../csvs/ethusd.csv', index_col='date', parse_dates=True, date_parser=dateparse)
@@ -40,13 +39,13 @@ df = df[['price']]
 print(df.head(5))
 ```
 
-                     price 
-    date                   
-    2019-01-17  122.002639 
-    2019-01-18  120.840360 
-    2019-01-19  123.167901 
-    2019-01-20  119.378474 
-    2019-01-21  116.331089 
+                     price
+    date
+    2019-01-17  122.002639
+    2019-01-18  120.840360
+    2019-01-19  123.167901
+    2019-01-20  119.378474
+    2019-01-21  116.331089
 
 
 
@@ -65,7 +64,7 @@ The actual implementation [can be found here](https://github.com/scipy/scipy/blo
 The result is an numpy array of indexes that are the peaks.
 So in essence, `argrelextreama` returns `ilocs` of the DataFrame.
 If you are fuzzy on what iloc means it is a _Purely integer-location based indexing for selection by position._
-In order to get prices that are the peaks you can use `df.iloc` function. 
+In order to get prices that are the peaks you can use `df.iloc` function.
 
 Note, that `order` in `argrelextreama` means a range from both sides.
 We have daily data, so `order=3` means `+-3days` - weekly peaks.
@@ -119,16 +118,16 @@ print(df[df['weekly_min'] == True])
     Index: []
 
 
-    /Users/ed/.local/share/virtualenvs/data-saE_DZ1J/lib/python3.6/site-packages/ipykernel_launcher.py:4: SettingWithCopyWarning: 
+    /Users/ed/.local/share/virtualenvs/data-saE_DZ1J/lib/python3.6/site-packages/ipykernel_launcher.py:4: SettingWithCopyWarning:
     A value is trying to be set on a copy of a slice from a DataFrame.
     Try using .loc[row_indexer,col_indexer] = value instead
-    
+
     See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
       after removing the cwd from sys.path.
-    /Users/ed/.local/share/virtualenvs/data-saE_DZ1J/lib/python3.6/site-packages/ipykernel_launcher.py:5: SettingWithCopyWarning: 
+    /Users/ed/.local/share/virtualenvs/data-saE_DZ1J/lib/python3.6/site-packages/ipykernel_launcher.py:5: SettingWithCopyWarning:
     A value is trying to be set on a copy of a slice from a DataFrame.
     Try using .loc[row_indexer,col_indexer] = value instead
-    
+
     See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
       """
 
@@ -151,7 +150,7 @@ df[df['weekly_min']].price.plot(style='.', lw=10, color='green', marker="^");
 ```
 
                      price  weekly_max  weekly_min
-    date                                          
+    date
     2019-01-19  123.167901        True       False
     2019-01-29  104.371118       False        True
     2019-02-03  107.372949        True       False

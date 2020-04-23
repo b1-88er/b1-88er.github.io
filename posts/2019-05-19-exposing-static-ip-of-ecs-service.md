@@ -1,5 +1,4 @@
 ---
-categories: [aws, terraform, ecs, eip, nlb]
 date: "2019-05-19T00:00:00Z"
 summary: How to serve an ECS service via both public ALB and public NLB.
 title: Serving an ECS service via both ALB and NLB

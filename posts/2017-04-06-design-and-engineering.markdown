@@ -1,5 +1,4 @@
 ---
-categories: design code
 date: "2017-04-06T00:00:00Z"
 summary: The relationship between designers and software engineers.
 title: Design and Code

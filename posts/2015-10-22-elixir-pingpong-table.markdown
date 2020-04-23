@@ -1,5 +1,4 @@
 ---
-categories: elixir
 date: "2015-10-22T00:00:00Z"
 summary: How did I learn about Elixir processes that is worth sharing.
 title: My discoveries about Elixir processes
@@ -84,14 +83,14 @@ So this is straight forward. It is worth mentioning that the second argument mus
 We can demonstrate some elixir processes properties during a simple exercise. Lets design a ping-pong table where each side "ping" and "pong" are going to be separate process exchanging messages. It will look like this:
 
 ```
-+--------------+                                 
-|              |                                 
-|     iex      |                                 
-|              |                                 
-+------+-------+                                 
-       |                                         
-       |:ping                                    
-       |                                         
++--------------+
+|              |
+|     iex      |
+|              |
++------+-------+
+       |
+       |:ping
+       |
 +------v-------+     :pong       +--------------+
 |              +----------------->              |
 | ping process |                 | pong process |
@@ -348,14 +347,14 @@ At *#1* we pattern match what *Table.start* function returns - *{ping, pong}* PI
 
 
 ```
-+--------------+                                 
-|              |                                 
-|     iex      |                                 
-|              |                                 
-+------+-------+                                 
-       |                                         
++--------------+
+|              |
+|     iex      |
+|              |
++------+-------+
+       |
        |{pong_pid, :ping} we do it first because in {from, :ping} - from must be pong PID!
-       |                                         
+       |
 +------v-------+  {self, :pong}  +--------------+
 |              +----------------->              |
 | ping process |                 | pong process |

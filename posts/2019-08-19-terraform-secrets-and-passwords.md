@@ -1,5 +1,4 @@
 ---
-categories: terraform iac kms aws
 date: "2019-08-19T00:00:00Z"
 summary: How to store sensitive data like passwords within repo when using terraform.
   Simple solution for AWS users.

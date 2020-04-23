@@ -1,5 +1,4 @@
 ---
-categories: elixir links
 date: "2015-11-12T00:00:00Z"
 summary: You are familiar with basic concept of Elixir/Erlang processes and you want
   to take a step further.

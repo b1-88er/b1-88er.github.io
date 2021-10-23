@@ -8,29 +8,41 @@
     <language>en-us</language>
     <lastBuildDate>Sat, 16 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Confusing case of `GOPATH` and `GOROOT`</title>
+      <title>How `GOPATH` and `GOROOT` works with `asdf` and GoLand</title>
       <link>/posts/gopath-and-goroot/</link>
       <pubDate>Sat, 16 Oct 2021 00:00:00 +0000</pubDate>
       
       <guid>/posts/gopath-and-goroot/</guid>
-      <description>How &lt;code&gt;GOPATH&lt;/code&gt; and &lt;code&gt;GOROOT&lt;/code&gt; works in plain words.</description>
+      <description>How &lt;code&gt;GOPATH&lt;/code&gt; and &lt;code&gt;GOROOT&lt;/code&gt; works with &lt;code&gt;asdf&lt;/code&gt; and GoLand</description>
       <content>&lt;h2 id=&#34;goroot&#34;&gt;&lt;code&gt;GOROOT&lt;/code&gt;&lt;/h2&gt;
-&lt;p&gt;Where to start &lt;a href=&#34;https://golang.org/doc/code&#34;&gt;https://golang.org/doc/code&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;When you have multiple versions installed, you can discover where each is installed, look at the version&amp;rsquo;s GOROOT value.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://golang.org/doc/manage-install&#34;&gt;Source&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id=&#34;gopath&#34;&gt;&lt;code&gt;GOPATH&lt;/code&gt;&lt;/h2&gt;
-&lt;p&gt;what gopath is used for.
-which value should be set under what circumstances.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;If GOPATH is set, binaries are installed to the bin subdirectory of the first directory in the GOPATH list. Otherwise, binaries are installed to the bin subdirectory of the default GOPATH&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://golang.org/doc/gopath_code&#34;&gt;Source&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id=&#34;gopath-and-goroot-with-asdf&#34;&gt;&lt;code&gt;GOPATH&lt;/code&gt; and &lt;code&gt;GOROOT&lt;/code&gt; with &lt;code&gt;asdf&lt;/code&gt;&lt;/h2&gt;
-&lt;p&gt;link to asdf and why i use it
-where it is installed
-where packages are by default&lt;/p&gt;
-&lt;h2 id=&#34;gopath-and-goroot-in-modules&#34;&gt;&lt;code&gt;GOPATH&lt;/code&gt; and &lt;code&gt;GOROOT&lt;/code&gt; in modules&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;repository: collection of modules, but usually has a single module.&lt;/li&gt;
-&lt;li&gt;module: collection of packages. Contains &lt;code&gt;go.mod&lt;/code&gt; file. &lt;code&gt;go.mod&lt;/code&gt; declares &lt;code&gt;module path&lt;/code&gt;: import path prefix for all the packages.
-&lt;code&gt;repository&lt;/code&gt; -&amp;gt; &lt;code&gt;module&lt;/code&gt; -&amp;gt; &lt;code&gt;package&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;I use &lt;a href=&#34;https://asdf-vm.com/guide/introduction.html#how-it-works&#34;&gt;&lt;code&gt;asdf&lt;/code&gt;&lt;/a&gt; for development in all programming languages I use.
+It is fairly easy but adds complexity to manage go.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;go env&lt;/code&gt; points out where by default go and packages are installed.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;➜ go env GOROOT
+~/.asdf/installs/golang/1.17.1/go
+
+➜ go env GOPATH
+~/.asdf/installs/golang/1.17.1/packages
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;While this is ok for &lt;code&gt;GOROOT&lt;/code&gt;, I don&amp;rsquo;t like having all packages installed in a global scope.
+Ideally, I want each module I develop to have its own space for packages.
+Having go tolling installed globally is fine and even desired.&lt;/p&gt;
 &lt;h2 id=&#34;gopath-and-goroot-in-goland&#34;&gt;&lt;code&gt;GOPATH&lt;/code&gt; and &lt;code&gt;GOROOT&lt;/code&gt; in GoLand&lt;/h2&gt;
-&lt;p&gt;How to configure it right, so everything run self-contained.&lt;/p&gt;
+&lt;p&gt;GoLand makes it possible to download Go SDK on a per project basis.
+I find it unnecessary, given that I already have go managed by &lt;code&gt;asdf&lt;/code&gt;.
+To pick up version of go managed by &lt;code&gt;asdf&lt;/code&gt;, I define &lt;code&gt;GOROOT&lt;/code&gt; as &lt;code&gt;~/.asdf/installs/golang/1.17.1/go&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;With &lt;code&gt;GOPATH&lt;/code&gt; I want my dependencies defined within the scope of the module.
+This gives me the maximum level of isolation which in turn eliminates the risks of clashing dependencies versions.
+I add &lt;code&gt;go&lt;/code&gt; directory to &lt;code&gt;.gitignore&lt;/code&gt; (&lt;code&gt;echo go &amp;gt;&amp;gt; .gitignore&lt;/code&gt;) and define &lt;code&gt;GOPATH&lt;/code&gt; in the project as &lt;code&gt;&amp;lt;modules-path&amp;gt;/go&lt;/code&gt;.&lt;/p&gt;
 </content>
     </item>
     

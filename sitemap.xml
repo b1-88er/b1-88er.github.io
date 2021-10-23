@@ -3,17 +3,42 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/posts/gopath-and-goroot/</loc>
+    <lastmod>2021-10-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/</loc>
-    <lastmod>2019-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2021-10-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/goland/</loc>
+    <lastmod>2021-10-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/golang/</loc>
+    <lastmod>2021-10-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>/posts/</loc>
-    <lastmod>2019-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2021-10-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2021-10-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>/posts/terraform-secrets-and-passwords/</loc>
+    <lastmod>2019-08-19T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/terraform/</loc>
     <lastmod>2019-08-19T00:00:00+00:00</lastmod>
   </url>
   
@@ -23,8 +48,28 @@
   </url>
   
   <url>
+    <loc>/tags/terragrunt/</loc>
+    <lastmod>2019-06-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/pandas/</loc>
+    <lastmod>2019-06-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/posts/finding-local-extreams-in-pandas-time-series/</loc>
     <lastmod>2019-06-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/python/</loc>
+    <lastmod>2019-06-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/aws/</loc>
+    <lastmod>2019-05-19T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -35,6 +80,11 @@
   <url>
     <loc>/posts/design-and-engineering/</loc>
     <lastmod>2017-04-06T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/elixir/</loc>
+    <lastmod>2015-11-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -54,10 +104,6 @@
   
   <url>
     <loc>/categories/</loc>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
   </url>
   
 </urlset>

@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>elixir on Edd&#39;s blog</title>
+    <link>/tags/elixir/</link>
+    <description>Recent content in elixir on Edd&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 12 Nov 2015 00:00:00 +0000</lastBuildDate><atom:link href="/tags/elixir/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linking Elixir processes together</title>
+      <link>/posts/links-in-elixir/</link>
+      <pubDate>Thu, 12 Nov 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/links-in-elixir/</guid>
+      <description>You are familiar with basic concept of Elixir/Erlang processes and you want to take a step further.</description>
+      <content>&lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;
+&lt;p&gt;If you actually don&amp;rsquo;t know much about Elixir processes but you already learned something about Elixir checkout [my post about processes]({% post_url 2015-10-22-elixir-pingpong-table %}) and come back afterwords. I assume that you know how &lt;strong&gt;spawn/1&lt;/strong&gt; and &lt;strong&gt;spawn/3&lt;/strong&gt; work and you know basic concepts around process communication.&lt;/p&gt;
+&lt;h2 id=&#34;connecting-processes-together&#34;&gt;Connecting processes together.&lt;/h2&gt;
+&lt;p&gt;It is very common that processes are somehow related to each other, we also know that they do not share state. Right now you should be asking: &lt;strong&gt;&amp;ldquo;How to make sure that life of process depends on another?&amp;quot;&lt;/strong&gt;. Erlang provides mechanism called linking. In Elixir we can use it by calling &lt;strong&gt;spawn_link&lt;/strong&gt;. Let&amp;rsquo;s check what docs have to say about that function.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; spawn_link(fun)
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;Spawns&lt;/span&gt; the given function, links it to the current process &lt;span style=&#34;color:#f92672&#34;&gt;and&lt;/span&gt; returns its pid&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;Check&lt;/span&gt; the &lt;span style=&#34;color:#a6e22e&#34;&gt;Process&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;and&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Node&lt;/span&gt; modules &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; other functions to handle processes,
+including spawning functions &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; nodes&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;Inlined&lt;/span&gt; by the compiler&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;Examples&lt;/span&gt;
+
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;┃&lt;/span&gt; current &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; self()
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;┃&lt;/span&gt; child   &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; spawn_link(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; send current, {self(), &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;} &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;)
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;┃&lt;/span&gt;
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;┃&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;receive&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;┃&lt;/span&gt;   {&lt;span style=&#34;color:#f92672&#34;&gt;^&lt;/span&gt;child, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;} &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Received 3 back&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;┃&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In my opinion, that description is quite vage, so let&amp;rsquo;s put to the test.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; child   &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; spawn_link(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; send current, {self(), &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;} &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;)
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.65.0&amp;gt;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;receive&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+...(&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;   {&lt;span style=&#34;color:#f92672&#34;&gt;^&lt;/span&gt;child, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;} &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Received 3 back&amp;#34;&lt;/span&gt;
+...(&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;span style=&#34;color:#a6e22e&#34;&gt;Received&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt; back
+&lt;span style=&#34;color:#e6db74&#34;&gt;:ok&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;We received 3, which is OK, but&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Q: what if we call spawn instead of spawn_link?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; current &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; self()
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.57.0&amp;gt;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; child   &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; spawn(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; send current, {self(), &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;} &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;)
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.60.0&amp;gt;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;receive&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+...(&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;   {&lt;span style=&#34;color:#f92672&#34;&gt;^&lt;/span&gt;child, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;} &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Received 3 back&amp;#34;&lt;/span&gt;
+...(&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;span style=&#34;color:#a6e22e&#34;&gt;Received&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt; back
+&lt;span style=&#34;color:#e6db74&#34;&gt;:ok&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;Q: The result is exactly the same, so what is the exact purpose of &lt;strong&gt;spawn_link&lt;/strong&gt; then?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A: The answer is: &amp;ldquo;Error handling&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Or to be more specific: &amp;ldquo;spawn_link will notify linked process about abnormal exit reason for the dependent process&amp;rdquo;. But before going any deeper we need to really understand what actually happens when process finishes its work.&lt;/p&gt;
+&lt;h2 id=&#34;when-process-ends&#34;&gt;When process ends&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&#34;/images/meme_oracle_happens_for_a_reason.jpg&#34; alt=&#34;oracle matrix meme&#34;&gt;
+When a process finishes its work, it exits. It is a different mechanism than exceptions and with it we can detect when something wrong (or unexpected) happens. When process finishes its work it implicitly calls &lt;strong&gt;exit(:normal)&lt;/strong&gt; to communicate with its parent that job has been done. Every other argument to exit/1 than &lt;strong&gt;:normal&lt;/strong&gt; is treated as an error. You should also know that Elixir shell is a process as well, so you should be able to link to it as well.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; spawn_link(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; exit(&lt;span style=&#34;color:#e6db74&#34;&gt;:normal&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;)
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.104.0&amp;gt;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; spawn(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; exit(&lt;span style=&#34;color:#e6db74&#34;&gt;:normal&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;)
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.106.0&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;So far there are no changes between &lt;strong&gt;spawn/1&lt;/strong&gt; and &lt;strong&gt;spawn_link/1&lt;/strong&gt;, that is because we exit the process with &lt;strong&gt;:normal&lt;/strong&gt; reason. But what would happen for other reasons?&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;{iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; spawn(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; exit(&lt;span style=&#34;color:#e6db74&#34;&gt;:oh_no_i_did_something_wrong&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;)
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.114.0&amp;gt;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; spawn_link(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; exit(&lt;span style=&#34;color:#e6db74&#34;&gt;:oh_no_i_did_something_wrong&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;)
+&lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;EXIT&lt;/span&gt; from &lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.112.0&amp;gt;) :oh_no_i_did_something_wrong&lt;/span&gt;
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;Interactive&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Elixir&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;1.1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; press &lt;span style=&#34;color:#a6e22e&#34;&gt;Ctrl&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;C&lt;/span&gt; to exit (type h() &lt;span style=&#34;color:#a6e22e&#34;&gt;ENTER&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; help)
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;BINGO! Our shell processes does not catch &lt;strong&gt;:EXIT&lt;/strong&gt; message, so link propagates the exit reason further to the process that observers elixir shell. The &amp;ldquo;observer&amp;rdquo; catches the error and restarts the shell process. But how to actually handle exit messages from linked processes?&lt;/p&gt;
+&lt;h2 id=&#34;trapping-exists&#34;&gt;Trapping exists&lt;/h2&gt;
+&lt;p&gt;Now that we know how to track exits from linked processes, the question is:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Q: How to actually react to failures of linked processes?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A: trap_exit&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Each process can be flagged, meaning you can customize its properties like minimal heap size, priority level, &lt;strong&gt;trapping&lt;/strong&gt; and many more advanced things. &lt;a href=&#34;http://www.erlang.org/doc/man/erlang.html#process_flag-2&#34;&gt;Erlang&amp;rsquo;s documentation lists them all&lt;/a&gt;. The most interesting part is this:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Setting trapping flag to true means that, exit signals arriving to a process are converted to &lt;strong&gt;{&amp;lsquo;EXIT&amp;rsquo;, from, reason}&lt;/strong&gt; messages, which can be received as ordinary messages. If trap_exit is set to false, the process exits if it receives an exit signal other than normal and the exit signal is propagated to its linked processes. Application processes should normally not trap exits.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;So setting trapping flag is not a common thing, it is because OTP from Erlang provides special building blocks for managing failures of other processes - &lt;strong&gt;supervisors&lt;/strong&gt;. I will describe them in the next blog post, but for the time being we will go against the wind which is what curious programmers like most. Let&amp;rsquo;s start with trapping exists from linked processes by setting the proper flag.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Process&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;flag(&lt;span style=&#34;color:#e6db74&#34;&gt;:trap_exit&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;As it is said in the description, returned value is &lt;strong&gt;false&lt;/strong&gt; which is a previous state of that flag. If you called it again it would return true. Now that we have trapping enabled let&amp;rsquo;s link to the process which calculates 1 + 1 and finishes its work. We call flush afterwords to receive incoming messages to the shell process.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; spawn_link(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;)
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.145.0&amp;gt;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; flush
+{&lt;span style=&#34;color:#e6db74&#34;&gt;:EXIT&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.145.0&amp;gt;, :normal}&lt;/span&gt;
+&lt;span style=&#34;color:#e6db74&#34;&gt;:ok&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Spawned process sends us &lt;strong&gt;{:EXIT, #PID&amp;lt;0.145.0&amp;gt;, :normal}&lt;/strong&gt;. This means that process finishes its work without any problems. Now, let&amp;rsquo;s replicate that behavior more explicitly.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; spawn_link(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; exit(&lt;span style=&#34;color:#e6db74&#34;&gt;:normal&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;)
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.164.0&amp;gt;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; flush
+{&lt;span style=&#34;color:#e6db74&#34;&gt;:EXIT&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.164.0&amp;gt;, :normal}&lt;/span&gt;
+&lt;span style=&#34;color:#e6db74&#34;&gt;:ok&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now let&amp;rsquo;s try to exit the process with a message different then normal.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; spawn_link(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; exit(&lt;span style=&#34;color:#e6db74&#34;&gt;:custom_reason&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;)
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.167.0&amp;gt;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; flush
+{&lt;span style=&#34;color:#e6db74&#34;&gt;:EXIT&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.167.0&amp;gt;, :custom_reason}&lt;/span&gt;
+&lt;span style=&#34;color:#e6db74&#34;&gt;:ok&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Great, we intercept exit call and statement such as&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;receive&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+  {&lt;span style=&#34;color:#e6db74&#34;&gt;:EXIT&lt;/span&gt;, pid, reason} &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; here we could react
+&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;gives us a way to react to processes exits. But what about exceptions? They cause processes to die too!&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; spawn_link(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;raise&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;uuuuups!&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;)
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.174.0&amp;gt;&lt;/span&gt;
+
+&lt;span style=&#34;color:#ae81ff&#34;&gt;22&lt;/span&gt;:&lt;span style=&#34;color:#ae81ff&#34;&gt;28&lt;/span&gt;:&lt;span style=&#34;color:#ae81ff&#34;&gt;14.246&lt;/span&gt; [error] &lt;span style=&#34;color:#a6e22e&#34;&gt;Process&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.174.0&amp;gt; raised an exception&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;RuntimeError&lt;/span&gt;) uuuuups!
+    &lt;span style=&#34;color:#e6db74&#34;&gt;:erlang&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;apply&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; flush
+{&lt;span style=&#34;color:#e6db74&#34;&gt;:EXIT&lt;/span&gt;, &lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.174.0&amp;gt;,&lt;/span&gt;
+ {&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;\&lt;/span&gt;%&lt;span style=&#34;color:#a6e22e&#34;&gt;RuntimeError&lt;/span&gt;{&lt;span style=&#34;color:#e6db74&#34;&gt;message&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;uuuuups!&amp;#34;&lt;/span&gt;}, [{&lt;span style=&#34;color:#e6db74&#34;&gt;:erlang&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;:apply&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, []}]}}
+&lt;span style=&#34;color:#e6db74&#34;&gt;:ok&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Great, exceptions are trapped as well. We could react to them during processes exists.&lt;/p&gt;
+&lt;h2 id=&#34;visualizing-links&#34;&gt;Visualizing links&lt;/h2&gt;
+&lt;p&gt;Now that we have some knowledge about links, i&amp;rsquo;ll show a visualization of simple demo. LinksTest module creates a chain of linked processes and then tracks their exits.&lt;/p&gt;
+&lt;p&gt;Here is the code:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;defmodule&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;LinksTest&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; chain &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;chain called with 0, wating 2000 ms before exit&amp;#34;&lt;/span&gt;
+    &lt;span style=&#34;color:#e6db74&#34;&gt;:timer&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sleep(&lt;span style=&#34;color:#ae81ff&#34;&gt;2000&lt;/span&gt;)
+    exit(&lt;span style=&#34;color:#e6db74&#34;&gt;:chain_breaks_here&lt;/span&gt;)
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; chain n &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;Process&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;flag(&lt;span style=&#34;color:#e6db74&#34;&gt;:trap_exit&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;)
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;chain called with &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;n&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+    &lt;span style=&#34;color:#e6db74&#34;&gt;:timer&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sleep(&lt;span style=&#34;color:#ae81ff&#34;&gt;1000&lt;/span&gt;)
+    spawn_link(__MODULE__, &lt;span style=&#34;color:#e6db74&#34;&gt;:chain&lt;/span&gt;, [n&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;])
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;receive&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+      {&lt;span style=&#34;color:#e6db74&#34;&gt;:EXIT&lt;/span&gt;, pid, reason} &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;
+        &lt;span style=&#34;color:#e6db74&#34;&gt;:timer&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sleep(&lt;span style=&#34;color:#ae81ff&#34;&gt;500&lt;/span&gt;)
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Child process exits with reason &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;reason&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And here is the demo&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/process_chain.gif&#34; alt=&#34;chain demo&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The interesting fact is that after exit with &lt;strong&gt;:chain_breaks_here&lt;/strong&gt;, next exists are :normal. It is because the first process that catches :chain_breaks_here exit code consumes it and then exits normally, so the error is swallowed by the first process that catches it. If we didn&amp;rsquo;t trap exits in the chain and exit in the last process normally (:normal), the process would not exit at all - links prevent this. In other words: &lt;strong&gt;When calling exit(:normal) the process will not finish, it will stay up&lt;/strong&gt;. Let&amp;rsquo;s demo that as well!&lt;/p&gt;
+&lt;p&gt;Here is the code:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;defmodule&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;LinksTestNoTrap&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; chain &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;normal exit in the last link&amp;#34;&lt;/span&gt;
+    exit(&lt;span style=&#34;color:#e6db74&#34;&gt;:normal&lt;/span&gt;)
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; chain n &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;create link in a chain no. &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;n&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+    spawn_link(__MODULE__, &lt;span style=&#34;color:#e6db74&#34;&gt;:chain&lt;/span&gt;, [n&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;])
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;receive&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+      msg &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;n&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; received &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;msg&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And here is the demo&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/process_chain_no_break.gif&#34; alt=&#34;chain demo&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;links-are-bidirectional&#34;&gt;Links are bidirectional&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&#34;/images/3_musketeers_links.jpg&#34; alt=&#34;oracle matrix meme&#34;&gt;&lt;/p&gt;
+&lt;p&gt;So far we have been killing processes that are children of other processes. The question is:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Q: If I kill the parent, do links break then?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A: Yes, links are bidirectional&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Let&amp;rsquo;s create a tree of processes and kill the root of that tree:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;defmodule&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Bidirectional&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; leaf name &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;receive&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+      msg &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;name&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; received &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;msg&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; node name &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+    spawn_link __MODULE__, &lt;span style=&#34;color:#e6db74&#34;&gt;:leaf&lt;/span&gt;, [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;node: &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;name&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; first leaf&amp;#34;&lt;/span&gt;]
+    spawn_link __MODULE__, &lt;span style=&#34;color:#e6db74&#34;&gt;:leaf&lt;/span&gt;, [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;node: &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;name&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; second leaf&amp;#34;&lt;/span&gt;]
+    spawn_link __MODULE__, &lt;span style=&#34;color:#e6db74&#34;&gt;:leaf&lt;/span&gt;, [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;node: &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;name&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; third leaf&amp;#34;&lt;/span&gt;]
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;receive&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+      msg &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;name&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; received &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;msg&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; kernel &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+    spawn_link __MODULE__, &lt;span style=&#34;color:#e6db74&#34;&gt;:node&lt;/span&gt;, [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;first node&amp;#34;&lt;/span&gt;]
+    spawn_link __MODULE__, &lt;span style=&#34;color:#e6db74&#34;&gt;:node&lt;/span&gt;, [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;second node&amp;#34;&lt;/span&gt;]
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;receive&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+      msg &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;kernel received &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;msg&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; create_graph &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+    spawn_link __MODULE__, &lt;span style=&#34;color:#e6db74&#34;&gt;:kernel&lt;/span&gt;, []
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The code is fairly simple, create_graph function creates a kernel process, which spawns and link 2 node processes and each node creates 3 leafs. Then we kill the kernel PID and see what is going to happen. Hard to imagine? Let&amp;rsquo;s visualize that!&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/links_on_a_tree.gif&#34; alt=&#34;bidirectional links demo&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Everything happens as planned and the entire tree is killed. Death of the kernel process causes a chain reaction and everything dies. Even our shell which is linked with the kernel dies as well!&lt;/p&gt;
+</content>
+    </item>
+    
+    <item>
+      <title>My discoveries about Elixir processes</title>
+      <link>/posts/elixir-pingpong-table/</link>
+      <pubDate>Thu, 22 Oct 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/elixir-pingpong-table/</guid>
+      <description>How did I learn about Elixir processes that is worth sharing.</description>
+      <content>&lt;h3 id=&#34;books&#34;&gt;Books&lt;/h3&gt;
+&lt;p&gt;Learning new language is always challenging, especially if you try to learn something completely different from most of the languages out there. Elixir is one of them, sure it looks like Ruby, but the actual power of it comes from BEAM - VM that powers Erlang programs. The basic unit of Erlang concurrency model is a process. You can learn a lot about them here and there. The thing is, books cover them in a happy path manner. It means, that if copy-paste example from book it will run fine and everyone should be happy right? Well, not exactly. Experimenting with examples is always the most valuable thing that you can do (at least in my case), so I tried, this is what I came up with.&lt;/p&gt;
+&lt;h3 id=&#34;very-basic-spawn&#34;&gt;Very basic spawn&lt;/h3&gt;
+&lt;p&gt;The easiest way to spawn process in BEAM is to do it from shell.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; spawn(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;hello from process&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;)
+hello from process
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.61.0&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Every resource about Elixir will have such an example. Spawn/1 (there is &lt;code&gt;spawn/3&lt;/code&gt;) runs functions in a fresh process and returns its identifier. Cool, but my questions were:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Q: Is this PID is a completely random number?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A: Not entirely, but you have no control over process id number. I found good &lt;a href=&#34;http://stackoverflow.com/questions/243363/can-someone-explain-the-structure-of-a-pid-in-erlang?rq=1&#34;&gt;stackoverlow answer to that one&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Q: Can this function take any argument?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A: No, no arguments if you run process like that. You can do it in spawn/3&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Q: Is it a async operation, will the &amp;ldquo;spawner&amp;rdquo; wait for this process to finish?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A: Lets check:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; spawn(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;
+...(&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;hello from process&amp;#34;&lt;/span&gt;
+...(&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;:timer&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sleep(&lt;span style=&#34;color:#ae81ff&#34;&gt;5000&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;# miliseconds&lt;/span&gt;
+...(&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;)
+hello from process
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.75.0&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Shell will be available immediately, so the answer is &amp;ldquo;NO&amp;rdquo; - spawn won&amp;rsquo;t wait for this process to finish.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Q: So is this process even alive?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A: Lets check:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; pid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; spawn(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;hello from process&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;)
+hello from process
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.77.0&amp;gt;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Process&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;alive? pid
+&lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;So process is dead after doing its job. So the answer is: NO - this process is dead.&lt;/p&gt;
+&lt;h3 id=&#34;process-inside-a-module&#34;&gt;Process inside a module&lt;/h3&gt;
+&lt;p&gt;I mentioned &lt;code&gt;spawn/3&lt;/code&gt;. If you don&amp;rsquo;t know what given function does, just type &lt;code&gt;h(function/number_arguments)&lt;/code&gt; and you will see something like this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; h(spawn&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)
+&lt;span style=&#34;color:#a6e22e&#34;&gt;Spawns&lt;/span&gt; the given module &lt;span style=&#34;color:#f92672&#34;&gt;and&lt;/span&gt; function passing the given args &lt;span style=&#34;color:#f92672&#34;&gt;and&lt;/span&gt; returns its
+pid&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;Check&lt;/span&gt; the modules &lt;span style=&#34;color:#a6e22e&#34;&gt;Process&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;and&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Node&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; other functions to handle processes,
+including spawning functions &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; nodes&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;Inlined&lt;/span&gt; by the compiler&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;Examples&lt;/span&gt;
+
+&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;┃&lt;/span&gt; spawn(&lt;span style=&#34;color:#a6e22e&#34;&gt;SomeModule&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;:function&lt;/span&gt;, [&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;])
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;So this is straight forward. It is worth mentioning that the second argument must be an atom. And the third argument is a list of arguments, so if you want to pass a single list as an argument you need to pass &lt;code&gt;[[:items, :of, :a, :passed, :list]]&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;ping-pong-game-table&#34;&gt;Ping-pong game table&lt;/h3&gt;
+&lt;p&gt;We can demonstrate some elixir processes properties during a simple exercise. Lets design a ping-pong table where each side &amp;ldquo;ping&amp;rdquo; and &amp;ldquo;pong&amp;rdquo; are going to be separate process exchanging messages. It will look like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+--------------+
+|              |
+|     iex      |
+|              |
++------+-------+
+       |
+       |:ping
+       |
++------v-------+     :pong       +--------------+
+|              +-----------------&amp;gt;              |
+| ping process |                 | pong process |
+|              &amp;lt;-----------------+              |
++--------------+     :ping       +--------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Lets define a module that spawns processes and starts interaction with them. We are going to solve this by incrementally adding code and asking bunch of noobie questions to learn as much as we can. Lets start with a basic process and a start function, we are trying to solve: &lt;em&gt;&amp;ldquo;iex&amp;rdquo; :pinging ping process&lt;/em&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;defmodule&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Table&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; ping &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;receive&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+      &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;received ping&amp;#39;&lt;/span&gt;)
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; start &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+    spawn(__MODULE__, &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;, [])
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Function &lt;em&gt;start&lt;/em&gt; spawns a ping process and returns its PID. Remember, when spawning a process in module the second argument must be an &lt;strong&gt;atom&lt;/strong&gt; otherwise you can get unexpected result quite hard to debug later. In our case, if we call &lt;code&gt;spawn(__MODULE__, ping, [])&lt;/code&gt;, we would not spawn a process but call a ping function instead, which would block forever at receive statement. Fortunately we have correct implementation so we can try it:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; ping &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Table&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;start
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.67.0&amp;gt;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Process&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;alive? ping
+&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;tail-recursion-keeping-process-alive&#34;&gt;Tail-recursion, keeping process alive.&lt;/h4&gt;
+&lt;p&gt;It looks good, PID is alive and well. Now it is time send a message to it, lets do it a few times and realize that after sending a first message our process is dead.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; send ping, &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;
+received ping
+&lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; send ping, &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;
+&lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Process&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;alive? ping
+&lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Process is dead because after receiving message is continues executing a function, in our case it is the &lt;em&gt;end&lt;/em&gt; statement. Adding recursive call to itself would keep ping process alive.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; ping &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;receive&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;# 1. block here and wait for a message&lt;/span&gt;
+    &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;received ping&amp;#39;&lt;/span&gt;)
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+  ping &lt;span style=&#34;color:#75715e&#34;&gt;# 2. Call itself&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;It should work like this:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;spawn(__MODULE__, :ping, [])&lt;/code&gt; - spawn ping function in separate process&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;Block at receive statement &lt;strong&gt;(#1)&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Receive message and call itself &lt;strong&gt;(#2)&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Block at receive statement and wait for messages &lt;strong&gt;(#1)&lt;/strong&gt; and so on.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; p &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Table&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;start
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.78.0&amp;gt;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; send p, &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;
+received ping
+&lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; send p, &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;
+received ping
+&lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; send p, &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;
+received ping
+&lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Process&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;alive? p
+&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;Q: This is a recursion, am I going to overflow stack in this way?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A: No, elixir uses something called tail-recursion - it basically means that elixir will convert this recursive call to a loop during compilation. We can actually check if that&amp;rsquo;s true.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;We are going to use a tool called &lt;a href=&#34;http://www.erlang.org/doc/man/observer.html&#34;&gt;observer&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;:observer&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;You should see window like this one.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/erlang_vm_observer.png&#34; alt=&#34;Erlang VM observer&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Go ahead, click around and explore. Especially applications tab is interesting. You can peek and check process trees. Now we are ready to benchmark our ping process, we are going to call it 100M times, just type following line and go right to observer window.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; p &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Table&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;start
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.1569.0&amp;gt;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;..&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;100000000&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;|&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Stream&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;map(&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; _ &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; send p, {self(), &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;} &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;|&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Enum&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;count
+&lt;span style=&#34;color:#ae81ff&#34;&gt;100000000&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Go to &lt;em&gt;Load Charts&lt;/em&gt;. Memory usage will increase at first, but it at some point it should be constant during our micro benchmark execution.
+&lt;img src=&#34;/images/erlang_vm_observer_memory_usage.png&#34; alt=&#34;Erlang VM observer&#34;&gt;&lt;/p&gt;
+&lt;p&gt;You can also check in &lt;em&gt;processes&lt;/em&gt; tab how our ping process is doing.
+&lt;img src=&#34;/images/erlang_vm_observer_ping_process.png&#34; alt=&#34;Erlang VM observer&#34;&gt;&lt;/p&gt;
+&lt;h4 id=&#34;self-or-who-am-i&#34;&gt;self() or &amp;ldquo;who am I&amp;rdquo;?&lt;/h4&gt;
+&lt;p&gt;Before we begin implementating interaction between processes, lets try something new.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; self()
+
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.57.0&amp;gt;&lt;/span&gt;
+
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; h(self)
+
+                                   &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; self()
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;Returns&lt;/span&gt; the pid (process identifier) of the calling process&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;Allowed&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; guard clauses&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Inlined&lt;/span&gt; by the compiler&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;What did we learn here? First of all, code that we execute in a REPL is executed in a process as well. We also know how get a PID of process that we are currently in. Lets dig a bit deeper now by sending messages to self() process in REPL, make sure you have running observer first.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;16&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;:observer&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;start
+&lt;span style=&#34;color:#e6db74&#34;&gt;:ok&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;17&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; self()
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.57.0&amp;gt;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;18&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; send self(), &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;HELLO&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;HELLO&amp;#34;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;19&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; send self(), &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;HELLO&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;HELLO&amp;#34;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; send self(), &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;HELLO&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;HELLO&amp;#34;&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;21&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; send self(), &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;HELLO&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;HELLO&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;We sent messages, but did they go? Lets check process tab in observer, sort the table by &lt;em&gt;MsgQ&lt;/em&gt; which says how many messages are waiting in queue to given process. We sent 4 messages so are looking for a process with MsgQ equals 4.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/erlang_vm_observer_self_queue.png&#34; alt=&#34;self() queue process&#34;&gt;&lt;/p&gt;
+&lt;p&gt;You can see that we sent 4 messages to self(), and queue is 4 items long. Remember, it is not permanent queue, once you kill the VM messages will be lost. Now it is time receive these messages, for this we are going to use &lt;em&gt;flush/0&lt;/em&gt; function. You can even peek what items are in queue, just double-click on a process and go to &lt;em&gt;messages&lt;/em&gt; tab.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/erlang_vm_observer_process_queue_peek.png&#34; alt=&#34;queue msgs list&#34;&gt;&lt;/p&gt;
+&lt;p&gt;But how to consume messages sent to shell process?&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; h(flush)
+
+                                  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; flush()
+
+&lt;span style=&#34;color:#a6e22e&#34;&gt;Flushes&lt;/span&gt; all messages sent to the shell &lt;span style=&#34;color:#f92672&#34;&gt;and&lt;/span&gt; prints them out&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;23&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; flush
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;HELLO&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;HELLO&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;HELLO&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;HELLO&amp;#34;&lt;/span&gt;
+&lt;span style=&#34;color:#e6db74&#34;&gt;:ok&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;No that we know a bit more about self function, lets try it in our ping-pong table!&lt;/p&gt;
+&lt;h4 id=&#34;sending-messages-back-and-forth-between-processes&#34;&gt;Sending messages back and forth between processes&lt;/h4&gt;
+&lt;p&gt;By far we were receiving messages in a process, but to we didn&amp;rsquo;t send any messages back yet. &lt;em&gt;IO.puts&lt;/em&gt; is a useful function, but we want our process to communicate. Lets try example below.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;defmodule&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Table&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; ping &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;receive&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+      {from, &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;} &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;#1&lt;/span&gt;
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ping process reached, going to respond with :pong&amp;#39;&lt;/span&gt;
+        send from, {self(), &lt;span style=&#34;color:#e6db74&#34;&gt;:pong&lt;/span&gt;} &lt;span style=&#34;color:#75715e&#34;&gt;#2&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+    ping
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; start &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+    spawn(__MODULE__, &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;, [])
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;We changed the way what we receive in &lt;em&gt;#1&lt;/em&gt;, instead expecting a &lt;em&gt;:ping&lt;/em&gt; atom we wait for a tuple &lt;em&gt;{from, :ping}&lt;/em&gt;. It means, that we will know not only that someone sends us :ping, but also who is sending it. In &lt;em&gt;#2&lt;/em&gt; we respond in the same manner, we send a tuple &lt;em&gt;back to the sender&lt;/em&gt; of the :ping atom, but also with the information who is sending it - the ping process - self(). Now, since we know how self() works, we can test our ping process from a shell.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; p &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Table&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;start
+&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.80.0&amp;gt;  #1&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; send(p, {self(), &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;}) &lt;span style=&#34;color:#75715e&#34;&gt;#2&lt;/span&gt;
+ping process reached, going to respond with &lt;span style=&#34;color:#e6db74&#34;&gt;:pong&lt;/span&gt;
+{&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.57.0&amp;gt;, :ping} #3&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;13&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; flush
+{&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.80.0&amp;gt;, :pong}  #4&lt;/span&gt;
+&lt;span style=&#34;color:#e6db74&#34;&gt;:ok&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;First we spawn ping process in start function &lt;em&gt;#1&lt;/em&gt;, it returns a PID 0.80.0 of the ping process. Then we send tuple of &lt;em&gt;{self, :ping}&lt;/em&gt; to ping process (&lt;em&gt;#2&lt;/em&gt;), at &lt;em&gt;#3&lt;/em&gt; we can see what has been sent. The &lt;em&gt;#4&lt;/em&gt; is the message sent back from ping process. We are very close to the finish now. All we have to do, is to create similar function to ping process called &lt;em&gt;pong&lt;/em&gt;. Example bellow does the job.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;defmodule&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Table&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; ping &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;receive&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+      {from, &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;} &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ping process reached, going to respond with :pong&amp;#39;&lt;/span&gt;
+        &lt;span style=&#34;color:#e6db74&#34;&gt;:timer&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sleep(&lt;span style=&#34;color:#ae81ff&#34;&gt;1000&lt;/span&gt;)
+        send from, {self(), &lt;span style=&#34;color:#e6db74&#34;&gt;:pong&lt;/span&gt;}
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+    ping
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; pong &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;#1&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;receive&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+      {from, &lt;span style=&#34;color:#e6db74&#34;&gt;:pong&lt;/span&gt;} &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;#2&lt;/span&gt;
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;IO&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pong process reached, going to respond with :ping&amp;#39;&lt;/span&gt;
+        &lt;span style=&#34;color:#e6db74&#34;&gt;:timer&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sleep(&lt;span style=&#34;color:#ae81ff&#34;&gt;1000&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;#4&lt;/span&gt;
+        send from, {self(), &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;} &lt;span style=&#34;color:#75715e&#34;&gt;#3&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+    pong
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; start &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+    ping_pid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; spawn __MODULE__, &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;, []
+    pong_pid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; spawn __MODULE__, &lt;span style=&#34;color:#e6db74&#34;&gt;:pong&lt;/span&gt;, [] &lt;span style=&#34;color:#75715e&#34;&gt;#5&lt;/span&gt;
+    {ping_pid, pong_pid}
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The pong function (&lt;em&gt;#1&lt;/em&gt;) is very similar to the ping one. The main difference is that we expect &lt;em&gt;:pong&lt;/em&gt; instead of :ping atom (&lt;em&gt;#2&lt;/em&gt;) and we respond with &lt;em&gt;:ping&lt;/em&gt; - not :pong (&lt;em&gt;#3&lt;/em&gt;). I also put a &lt;em&gt;:timer.sleep(1000)&lt;/em&gt; to hold execution for a 1 second (&lt;em&gt;#4&lt;/em&gt;), just to avoid flooding ourselves with messages. If you want to call some code from standard Erlang library, just use it like &lt;em&gt;:module_name.function&lt;/em&gt;. We also had to add &lt;em&gt;pong_pid = spawn &lt;strong&gt;MODULE&lt;/strong&gt;, :pong, []&lt;/em&gt; in &lt;em&gt;#5&lt;/em&gt; to actually create a pong process, lets play with what we have.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; {ping, pong} &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Table&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;start &lt;span style=&#34;color:#75715e&#34;&gt;#1&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;13&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; send ping, {pong, &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;} &lt;span style=&#34;color:#75715e&#34;&gt;#2&lt;/span&gt;
+ping process reached, going to respond with &lt;span style=&#34;color:#e6db74&#34;&gt;:pong&lt;/span&gt;
+{&lt;span style=&#34;color:#75715e&#34;&gt;#PID&amp;lt;0.13059.0&amp;gt;, :ping}&lt;/span&gt;
+pong process reached, going to respond with &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;
+ping process reached, going to respond with &lt;span style=&#34;color:#e6db74&#34;&gt;:pong&lt;/span&gt;
+pong process reached, going to respond with &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;
+ping process reached, going to respond with &lt;span style=&#34;color:#e6db74&#34;&gt;:pong&lt;/span&gt;
+pong process reached, going to respond with &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;
+ping process reached, going to respond with &lt;span style=&#34;color:#e6db74&#34;&gt;:pong&lt;/span&gt;
+pong process reached, going to respond with &lt;span style=&#34;color:#e6db74&#34;&gt;:ping&lt;/span&gt;
+ping process reached, going to respond with &lt;span style=&#34;color:#e6db74&#34;&gt;:pong&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;At &lt;em&gt;#1&lt;/em&gt; we pattern match what &lt;em&gt;Table.start&lt;/em&gt; function returns - &lt;em&gt;{ping, pong}&lt;/em&gt; PIDs. Now it might get a bit confusing, we send &lt;em&gt;{pong, :ping}&lt;/em&gt; to &lt;em&gt;ping&lt;/em&gt; - why didn&amp;rsquo;t we send &lt;em&gt;{self, :ping}&lt;/em&gt; like before? It is because we want ping process to think that pong is sending the message, so we to have lie to ping process at first, remember that graph?&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+--------------+
+|              |
+|     iex      |
+|              |
++------+-------+
+       |
+       |{pong_pid, :ping} we do it first because in {from, :ping} - from must be pong PID!
+       |
++------v-------+  {self, :pong}  +--------------+
+|              +-----------------&amp;gt;              |
+| ping process |                 | pong process |
+|              &amp;lt;-----------------+              |
++--------------+  {self, :pong}  +--------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Eureka! We finish the PingPong table exercise!&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Q: But how to stop this &amp;ldquo;printing pong process reached, going to respond with :ping&amp;rdquo; ?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A: Just kill one of the process - ping or pong.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;It is easy, first check: &lt;a href=&#34;http://elixir-lang.org/docs/v1.0/elixir/Process.html#exit/2&#34;&gt;http://elixir-lang.org/docs/v1.0/elixir/Process.html#exit/2&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;14&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Process&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exit(ping, &lt;span style=&#34;color:#e6db74&#34;&gt;:kill&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;So, ping is dead, but pong should be still alive, lets check it&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-elixir&#34; data-lang=&#34;elixir&#34;&gt;iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;16&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Process&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;alive? pong
+&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
+iex(&lt;span style=&#34;color:#ae81ff&#34;&gt;17&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Process&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;alive? ping
+&lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;That is it, hope you learned something new!&lt;/p&gt;
+</content>
+    </item>
+    
+  </channel>
+</rss>

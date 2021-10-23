@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>golang on Edd&#39;s blog</title>
+    <link>/tags/golang/</link>
+    <description>Recent content in golang on Edd&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 16 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Confusing case of `GOPATH` and `GOROOT`</title>
+      <link>/posts/gopath-and-goroot/</link>
+      <pubDate>Sat, 16 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/gopath-and-goroot/</guid>
+      <description>How &lt;code&gt;GOPATH&lt;/code&gt; and &lt;code&gt;GOROOT&lt;/code&gt; works in plain words.</description>
+      <content>&lt;h2 id=&#34;goroot&#34;&gt;&lt;code&gt;GOROOT&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;Where to start &lt;a href=&#34;https://golang.org/doc/code&#34;&gt;https://golang.org/doc/code&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;gopath&#34;&gt;&lt;code&gt;GOPATH&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;what gopath is used for.
+which value should be set under what circumstances.&lt;/p&gt;
+&lt;h2 id=&#34;gopath-and-goroot-with-asdf&#34;&gt;&lt;code&gt;GOPATH&lt;/code&gt; and &lt;code&gt;GOROOT&lt;/code&gt; with &lt;code&gt;asdf&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;link to asdf and why i use it
+where it is installed
+where packages are by default&lt;/p&gt;
+&lt;h2 id=&#34;gopath-and-goroot-in-modules&#34;&gt;&lt;code&gt;GOPATH&lt;/code&gt; and &lt;code&gt;GOROOT&lt;/code&gt; in modules&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;repository: collection of modules, but usually has a single module.&lt;/li&gt;
+&lt;li&gt;module: collection of packages. Contains &lt;code&gt;go.mod&lt;/code&gt; file. &lt;code&gt;go.mod&lt;/code&gt; declares &lt;code&gt;module path&lt;/code&gt;: import path prefix for all the packages.
+&lt;code&gt;repository&lt;/code&gt; -&amp;gt; &lt;code&gt;module&lt;/code&gt; -&amp;gt; &lt;code&gt;package&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;gopath-and-goroot-in-goland&#34;&gt;&lt;code&gt;GOPATH&lt;/code&gt; and &lt;code&gt;GOROOT&lt;/code&gt; in GoLand&lt;/h2&gt;
+&lt;p&gt;How to configure it right, so everything run self-contained.&lt;/p&gt;
+</content>
+    </item>
+    
+  </channel>
+</rss>

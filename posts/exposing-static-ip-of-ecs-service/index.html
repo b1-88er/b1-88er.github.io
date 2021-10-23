@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   
-    <title>Serving an ECS service via both ALB and NLB :: Edd&#39;s blog — Personal blog</title>
+    <title>Serving an ECS service via both ALB and NLB :: Edd&#39;s blog</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="How to serve an ECS service via both public ALB and public NLB." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -23,7 +23,7 @@
 
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon-192x192.png">
 
   <link rel="shortcut icon" href="/img/favicon/green.png">
 
@@ -31,15 +31,14 @@
 
 <meta name="twitter:card" content="summary" />
 
-<meta name="twitter:creator" content="" />
 
 
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="Serving an ECS service via both ALB and NLB :: Edd&#39;s blog">
+<meta property="og:title" content="Serving an ECS service via both ALB and NLB">
 <meta property="og:description" content="How to serve an ECS service via both public ALB and public NLB." />
 <meta property="og:url" content="/posts/exposing-static-ip-of-ecs-service/" />
-<meta property="og:site_name" content="Serving an ECS service via both ALB and NLB" />
+<meta property="og:site_name" content="Edd&#39;s blog" />
 
   
     <meta property="og:image" content="/img/favicon/green.png">
@@ -63,7 +62,7 @@
 
 
 </head>
-<body class="">
+<body class="green">
 
 
 <div class="container center headings--one-size">
@@ -78,7 +77,9 @@
 </a>
 
     </div>
-    <div class="menu-trigger">menu</div>
+    
+      <div class="menu-trigger">menu</div>
+    
   </div>
   
     <nav class="menu">
@@ -115,13 +116,21 @@
   <h1 class="post-title">
     <a href="/posts/exposing-static-ip-of-ecs-service/">Serving an ECS service via both ALB and NLB</a></h1>
   <div class="post-meta">
-      
-    <span class="post-date">
-      2019-05-19
-    </span>
+    
+      <span class="post-date">
+        2019-05-19 
+      </span>
     
     
   </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="/tags/aws/">aws</a>&nbsp;
+    
+  </span>
+  
 
   
 
@@ -362,32 +371,34 @@ I want to focus on 2 key issues here.</p>
 Terraform can do it not only faster, but also give you a sense of control over all these resources.</p>
 
       </div></div>
+
   
-  <div class="pagination">
+  
+<div class="pagination">
     <div class="pagination__title">
-      <span
-        class="pagination__title-h">Read other posts</span>
-      <hr />
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
     </div>
     <div class="pagination__buttons">
-      
-      <span class="button previous">
-        <a href="/posts/finding-local-extreams-in-pandas-time-series/">
-          <span class="button__icon">←</span>
-          <span class="button__text">Peaks in pandas Time Series.</span>
-        </a>
-      </span>
-      
-      
-      <span class="button next">
-        <a href="/posts/design-and-engineering/">
-          <span class="button__text">Design and Code</span>
-          <span class="button__icon">→</span>
-        </a>
-      </span>
-      
+        
+        <span class="button previous">
+            <a href="/posts/finding-local-extreams-in-pandas-time-series/">
+                <span class="button__icon">←</span>
+                <span class="button__text">Peaks in pandas Time Series.</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="/posts/design-and-engineering/">
+                <span class="button__text">Design and Code</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
     </div>
-  </div>
+</div>
+
   
 
   
@@ -410,6 +421,8 @@ Terraform can do it not only faster, but also give you a sense of control over a
 
 <script src="/assets/main.js"></script>
 <script src="/assets/prism.js"></script>
+
+
 
 
 

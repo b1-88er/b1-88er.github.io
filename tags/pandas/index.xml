@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>pandas on Edd&#39;s blog</title>
+    <link>/tags/pandas/</link>
+    <description>Recent content in pandas on Edd&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 05 Jun 2019 00:00:00 +0000</lastBuildDate><atom:link href="/tags/pandas/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Peaks in pandas Time Series.</title>
+      <link>/posts/finding-local-extreams-in-pandas-time-series/</link>
+      <pubDate>Wed, 05 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/finding-local-extreams-in-pandas-time-series/</guid>
+      <description>How to find peaks in pandas time series.</description>
+      <content>&lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;
+&lt;p&gt;When processing time series in pandas, I found it quite hard to find local minima and maxima within a DataFrame.
+Even when knowing the &lt;a href=&#34;https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.argrelextrema.html&#34;&gt;correct function from scipy&lt;/a&gt;, taking correct results is still hard.
+Doing it effeciently is even harder.
+I found a partially correct answer on &lt;a href=&#34;https://stackoverflow.com/questions/48023982/pandas-finding-local-max-and-min/50836425#50836425&#34;&gt;stackoverflow&lt;/a&gt; and expand it here to provide the correct answer with examples.&lt;/p&gt;
+&lt;h2 id=&#34;solution&#34;&gt;Solution&lt;/h2&gt;
+&lt;h3 id=&#34;data&#34;&gt;Data&lt;/h3&gt;
+&lt;p&gt;First we need data to work on.
+I am importing a historical set of ethereum transactions.
+To make things simple, I resample the DataFrame to daily set and leave only price column.
+Notice that you can parse dates on the fly when parsing the CSV, even with custom callback function.
+The next plot presents the data loaded.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; pd
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; plt
+&lt;span style=&#34;color:#75715e&#34;&gt;# This makes plots prettier&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; seaborn; seaborn&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;set()
+&lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;matplotlib inline
+
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; datetime
+&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;dateparse&lt;/span&gt; (time_in_secs):
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; datetime&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;datetime&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fromtimestamp(float(time_in_secs))
+
+df &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pd&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_csv(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;../csvs/ethusd.csv&amp;#39;&lt;/span&gt;, index_col&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;date&amp;#39;&lt;/span&gt;, parse_dates&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;True, date_parser&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;dateparse)
+df &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;resample(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;D&amp;#39;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;mean()
+df &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; df[[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;price&amp;#39;&lt;/span&gt;]]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;head(&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;                 price
+date
+2019-01-17  122.002639
+2019-01-18  120.840360
+2019-01-19  123.167901
+2019-01-20  119.378474
+2019-01-21  116.331089
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;price&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(figsize&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;));
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;/images/maxmin/output_2_0.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;finding-indexes-for-extreams-with-scipy-and-argrelextrema&#34;&gt;Finding indexes for extreams with scipy and argrelextrema&lt;/h3&gt;
+&lt;p&gt;Scipy provides a &lt;a href=&#34;https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.argrelextrema.html&#34;&gt;argrelextreama function&lt;/a&gt; that does a LOT of heavy lifting in this problem.
+The actual implementation &lt;a href=&#34;https://github.com/scipy/scipy/blob/v1.3.0/scipy/signal/_peak_finding.py#L66&#34;&gt;can be found here&lt;/a&gt;.
+The result is an numpy array of indexes that are the peaks.
+So in essence, &lt;code&gt;argrelextreama&lt;/code&gt; returns &lt;code&gt;ilocs&lt;/code&gt; of the DataFrame.
+If you are fuzzy on what iloc means it is a &lt;em&gt;Purely integer-location based indexing for selection by position.&lt;/em&gt;
+In order to get prices that are the peaks you can use &lt;code&gt;df.iloc&lt;/code&gt; function.&lt;/p&gt;
+&lt;p&gt;Note, that &lt;code&gt;order&lt;/code&gt; in &lt;code&gt;argrelextreama&lt;/code&gt; means a range from both sides.
+We have daily data, so &lt;code&gt;order=3&lt;/code&gt; means &lt;code&gt;+-3days&lt;/code&gt; - weekly peaks.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; scipy.signal &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; argrelextrema
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#f92672&#34;&gt;as&lt;/span&gt; np
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# first argument can a multidimentional np array as&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# data : ndarray&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# Array in which to find the relative extrema.&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# This is reflected in what gets returned:&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#Returns&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#    -------&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#    extrema : ndarray&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#        Boolean array of the same shape&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# That is why at the end of the line we just take the first element&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# order: How many points on each side to use for the comparison to consider&lt;/span&gt;
+ilocs_min &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; argrelextrema(df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;price&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;values, np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;less_equal, order&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]
+ilocs_max &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; argrelextrema(df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;price&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;values, np&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;greater_equal, order&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]
+
+df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;price&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(figsize&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;), alpha&lt;span style=&#34;color:#f92672&#34;&gt;=.&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)
+&lt;span style=&#34;color:#75715e&#34;&gt;# filter prices that are peaks and plot them differently to be visable on the plot&lt;/span&gt;
+df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;iloc[ilocs_max]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;price&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(style&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;, lw&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;, color&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;red&amp;#39;&lt;/span&gt;, marker&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;v&amp;#34;&lt;/span&gt;);
+df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;iloc[ilocs_min]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;price&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(style&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;, lw&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;, color&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;green&amp;#39;&lt;/span&gt;, marker&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;^&amp;#34;&lt;/span&gt;);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;/images/maxmin/output_3_0.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;how-to-update-dataframe-with-found-peaks&#34;&gt;How to update DataFrame with found peaks&lt;/h3&gt;
+&lt;p&gt;Now that we know how to get the peaks in the time series, it is time to learn how to include the results in the DataFrame.
+The naive approach would be to use &lt;code&gt;iloc&lt;/code&gt; and combine with filtering.
+It would be not only very slow (for bigger datasets) but also would not work.
+Snippet bellow shows that approach.
+Notice that, you get a warning, but no errors nor exceptions.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html&lt;/span&gt;
+df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;weekly_max&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; False
+df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;weekly_min&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; False
+df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;iloc[ilocs_min][&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;weekly_min&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True
+df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;iloc[ilocs_max][&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;weekly_max&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True
+&lt;span style=&#34;color:#75715e&#34;&gt;# this will return empty DataFrame, which is not what we wanted.&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(df[df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;weekly_min&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; True])
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;Empty DataFrame
+Columns: [price, weekly_max, weekly_min]
+Index: []
+
+
+/Users/ed/.local/share/virtualenvs/data-saE_DZ1J/lib/python3.6/site-packages/ipykernel_launcher.py:4: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
+  after removing the cwd from sys.path.
+/Users/ed/.local/share/virtualenvs/data-saE_DZ1J/lib/python3.6/site-packages/ipykernel_launcher.py:5: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
+  &amp;quot;&amp;quot;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The warning is quite verbose.
+The key here is: &lt;em&gt;A value is trying to be set on a copy of a slice from a DataFrame.&lt;/em&gt;.
+Good explanation of this can be found &lt;a href=&#34;https://stackoverflow.com/a/20627316/1366719&#34;&gt;on stackoverflow&lt;/a&gt; and &lt;a href=&#34;https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy&#34;&gt;pandas documentation&lt;/a&gt;.
+Warning suggests using &lt;em&gt;.loc[row_indexer,col_indexer] = value&lt;/em&gt;, which is what is shown in the snippet bellow.
+Note, that &lt;code&gt;row_indexer&lt;/code&gt; means an index. To transform list of &lt;code&gt;ilocs&lt;/code&gt; to the index, use: &lt;code&gt;df.iloc[ilocs_min].index&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;weekly_max&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; False
+df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;weekly_min&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; False
+df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;loc[df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;iloc[ilocs_min]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;index, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;weekly_min&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True
+df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;loc[df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;iloc[ilocs_max]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;index, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;weekly_max&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True
+&lt;span style=&#34;color:#75715e&#34;&gt;# display prices that are minimums and maximums&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(df[df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;weekly_min&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt; df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;weekly_max&amp;#39;&lt;/span&gt;]])
+df&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;price&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(figsize&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;), alpha&lt;span style=&#34;color:#f92672&#34;&gt;=.&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;)
+df[df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;weekly_max&amp;#39;&lt;/span&gt;]]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;price&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(style&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;, lw&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;, color&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;red&amp;#39;&lt;/span&gt;, marker&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;v&amp;#34;&lt;/span&gt;);
+df[df[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;weekly_min&amp;#39;&lt;/span&gt;]]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;price&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;plot(style&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;, lw&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;, color&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;green&amp;#39;&lt;/span&gt;, marker&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;^&amp;#34;&lt;/span&gt;);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;                 price  weekly_max  weekly_min
+date
+2019-01-19  123.167901        True       False
+2019-01-29  104.371118       False        True
+2019-02-03  107.372949        True       False
+2019-02-06  102.280320       False        True
+2019-02-19  145.809688        True       False
+2019-02-23  153.401689        True       False
+2019-03-04  126.320644       False        True
+2019-03-07  137.093550        True       False
+2019-03-14  131.361888       False        True
+2019-03-16  140.445883        True       False
+2019-03-26  132.669041       False        True
+2019-04-03  170.548572        True       False
+2019-04-08  179.932684        True       False
+2019-04-16  163.505072       False        True
+2019-04-20  174.206577        True       False
+2019-04-26  151.879252       False        True
+2019-05-07  174.703111        True       False
+2019-05-16  260.186439        True       False
+2019-05-21  254.475075        True       False
+2019-05-23  239.937994       False        True
+2019-05-30  271.248413        True       False
+2019-05-31  255.605779       False        True
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Plot generated from updated DataFrame is the same as the one created by &lt;code&gt;df.iloc[ilocs_max].price.plot()&lt;/code&gt;. This is a good confirmation that DataFrame has been updated properly.
+&lt;img src=&#34;/images/maxmin/output_5_1.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;I hope it helped you and saved you some time. Cheers!&lt;/p&gt;
+</content>
+    </item>
+    
+  </channel>
+</rss>

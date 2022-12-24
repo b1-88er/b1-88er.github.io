@@ -4,32 +4,12 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2021-10-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/goland/</loc>
-    <lastmod>2021-10-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/golang/</loc>
-    <lastmod>2021-10-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/posts/gopath-and-goroot/</loc>
-    <lastmod>2021-10-16T00:00:00+00:00</lastmod>
+    <lastmod>2019-08-19T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>/posts/</loc>
-    <lastmod>2021-10-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
-    <lastmod>2021-10-16T00:00:00+00:00</lastmod>
+    <lastmod>2019-08-19T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -38,18 +18,13 @@
   </url>
   
   <url>
-    <loc>/tags/terraform/</loc>
+    <loc>/tags/</loc>
     <lastmod>2019-08-19T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/posts/terraform-project-structure/</loc>
-    <lastmod>2019-06-24T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/terragrunt/</loc>
-    <lastmod>2019-06-24T00:00:00+00:00</lastmod>
+    <loc>/tags/terraform/</loc>
+    <lastmod>2019-08-19T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -68,21 +43,6 @@
   </url>
   
   <url>
-    <loc>/tags/aws/</loc>
-    <lastmod>2019-05-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/posts/exposing-static-ip-of-ecs-service/</loc>
-    <lastmod>2019-05-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/posts/design-and-engineering/</loc>
-    <lastmod>2017-04-06T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/tags/elixir/</loc>
     <lastmod>2015-11-12T00:00:00+00:00</lastmod>
   </url>
@@ -95,6 +55,11 @@
   <url>
     <loc>/posts/elixir-pingpong-table/</loc>
     <lastmod>2015-10-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/aws/</loc>
+    <lastmod>2015-07-01T00:00:00+00:00</lastmod>
   </url>
   
   <url>

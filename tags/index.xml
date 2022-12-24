@@ -6,43 +6,13 @@
     <description>Recent content in Tags on Edd&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 16 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>goland</title>
-      <link>/tags/goland/</link>
-      <pubDate>Sat, 16 Oct 2021 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/goland/</guid>
-      <description></description>
-      <content></content>
-    </item>
-    
-    <item>
-      <title>golang</title>
-      <link>/tags/golang/</link>
-      <pubDate>Sat, 16 Oct 2021 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/golang/</guid>
-      <description></description>
-      <content></content>
-    </item>
-    
+    <lastBuildDate>Mon, 19 Aug 2019 00:00:00 +0000</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>terraform</title>
       <link>/tags/terraform/</link>
       <pubDate>Mon, 19 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/terraform/</guid>
-      <description></description>
-      <content></content>
-    </item>
-    
-    <item>
-      <title>terragrunt</title>
-      <link>/tags/terragrunt/</link>
-      <pubDate>Mon, 24 Jun 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/terragrunt/</guid>
       <description></description>
       <content></content>
     </item>
@@ -68,21 +38,21 @@
     </item>
     
     <item>
-      <title>aws</title>
-      <link>/tags/aws/</link>
-      <pubDate>Sun, 19 May 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/aws/</guid>
-      <description></description>
-      <content></content>
-    </item>
-    
-    <item>
       <title>elixir</title>
       <link>/tags/elixir/</link>
       <pubDate>Thu, 12 Nov 2015 00:00:00 +0000</pubDate>
       
       <guid>/tags/elixir/</guid>
+      <description></description>
+      <content></content>
+    </item>
+    
+    <item>
+      <title>aws</title>
+      <link>/tags/aws/</link>
+      <pubDate>Wed, 01 Jul 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/aws/</guid>
       <description></description>
       <content></content>
     </item>

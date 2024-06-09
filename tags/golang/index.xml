@@ -37,7 +37,7 @@ It was not obvious to me even when I found the answer. In fact I was scratching 
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;em&gt;This approach works.&lt;/em&gt; Now it is time to dissable the concept with an example. I will show how this techinque works, step by step.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;This approach works.&lt;/em&gt; Now it is time to dissasemble the concept with an example. I will show how this techinque works, step by step.&lt;/p&gt;
 &lt;h1 id=&#34;sample-program-using-execcmd&#34;&gt;Sample program using &lt;code&gt;exec.Cmd&lt;/code&gt;&lt;/h1&gt;
 &lt;p&gt;Consider the following example of a code that lists &amp;ldquo;commands&amp;rdquo; using the network.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;lsof&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;exec&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Cmd&lt;/span&gt; {

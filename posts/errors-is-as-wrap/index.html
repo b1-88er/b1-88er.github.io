@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>GoLang&#39;s approach to error handling. :: b1-88er blog</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Notes on error handling in GoLang." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="/posts/errors-is-as-wrap/" />
+
+
+
+
+<link rel="stylesheet" href="/assets/style.css">
+
+  <link rel="stylesheet" href="/assets/green.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="GoLang&#39;s approach to error handling.">
+<meta property="og:description" content="Notes on error handling in GoLang." />
+<meta property="og:url" content="/posts/errors-is-as-wrap/" />
+<meta property="og:site_name" content="b1-88er blog" />
+
+  
+    <meta property="og:image" content="/img/favicon/green.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2024-06-14 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="green">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    b1-88er blog
+  </div>
+</a>
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/cv.html">Hire me</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/cv.html">Hire me</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="/posts/errors-is-as-wrap/">GoLang&rsquo;s approach to error handling.</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2024-06-14 
+      </span>
+    
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="/tags/golang/">golang</a>&nbsp;
+    
+    #<a href="/tags/GOtchas/">GOtchas</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <p>GoLang&rsquo;s way of handling errors is different from any other language I have seen. If anything, it feels like an opinionated way of handling errors in C. Go is very different from Java, Python, JavaScript, or any other language that implements exceptions.</p>
+<p>This is probably why people love to criticize error handling in Go. Not having exceptions might feel like an unnecessary limitation.</p>
+<p>Go might be simpler than any other mainstream language, but that does not mean it will always be easy and trivial to write valid, idiomatic code. Without exceptions, there is no lazy escape hatch in the form of <code>throw Exception(&quot;failed&quot;)</code>.</p>
+<p>There are countless books and blog posts about errors in Go. This post is a dump of my notes on the subject. If you find the information here lacking, you can always check out <a href="https://go.dev/blog/error-handling-and-go">Go&rsquo;s official blog post</a>, <a href="https://go.dev/doc/tutorial/handle-errors">Go&rsquo;s official tutorial</a>, or <a href="https://medium.com/hprog99/mastering-error-handling-in-go-a-comprehensive-guide-fac34079833f">this comprehensive blog post on Medium</a>.
+I also highly recommend the book <a href="https://www.oreilly.com/library/view/learning-go-2nd/9781098139285/">Learning Go</a>. The chapter about error handling is stellar.</p>
+<h2 id="return-the-error-no-exceptions">Return the error, no exceptions<a href="#return-the-error-no-exceptions" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Without exceptions, error handling has to follow the same path as the nominal logic. Instead of throwing and catching exceptions, the user has to return the value and/or the error. The simplest example would be the following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">div</span>(<span style="color:#a6e22e">a</span>, <span style="color:#a6e22e">b</span> <span style="color:#66d9ef">float64</span>) (<span style="color:#66d9ef">float64</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">b</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;denominator cannot be zero: %f&#34;</span>, <span style="color:#a6e22e">b</span>)
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span> <span style="color:#f92672">/</span> <span style="color:#a6e22e">b</span>, <span style="color:#66d9ef">nil</span>
+}
+</code></pre></div><p>Rule number one in Go is to have code that is easy to read and reason about. Having a single control flow instead of 2 is a big simplifier. I can&rsquo;t count how many times I caught exceptions I didn&rsquo;t expect or didn&rsquo;t catch them where I was supposed to. Go doesn&rsquo;t allow unused variables, so errors must be handled or at least not outright ignored. If you don&rsquo;t use the <code>err</code> variable returned here: <code>f, err := os.Open(name)</code>, you get a compilation error. It forces developers to think about errors close to the place where they occur. With exceptions, it is different because errors might be ignored and mishandled a few abstraction layers higher.</p>
+<p>One might say that this is bad for code readability because error handling might obfuscate the &ldquo;happy path&rdquo;. I think such views miss the point - error handling is actually most of the code that we write. Not only in Go, but in general. There is usually one way the logic can go right and endless ways for the program to go wrong.</p>
+<h2 id="error-is-an-interface">error is an interface<a href="#error-is-an-interface" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>And a very simple one:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#66d9ef">error</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Error</span>() <span style="color:#66d9ef">string</span>
+}
+</code></pre></div><p>That is it. If your type implements the <code>Error() string</code> method, it is an <code>error</code> type.
+You can always build custom errors like:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MyErr</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">Codes</span> []<span style="color:#66d9ef">int</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">m</span> <span style="color:#a6e22e">MyErr</span>) <span style="color:#a6e22e">Error</span>() <span style="color:#66d9ef">string</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;codes: %v&#34;</span>, <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">Codes</span>)
+}
+</code></pre></div><h2 id="wrapping-and-unwrap">Wrapping and Unwrap()<a href="#wrapping-and-unwrap" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Usually, a function returns an error because some other error occurred within it. By wrapping the returned error with the original one, we create an <strong>error chain</strong> that will be useful to track the original source of the issue. If you don&rsquo;t return a custom error type and simply want to add a label to the original error, you can use <code>fmt.Errorf</code> with <code>%w</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">openFile</span>(<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#a6e22e">f</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">name</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;cannot open file: %w&#34;</span>, <span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+</code></pre></div><p><code>%w</code> is a special case documented in the <a href="https://pkg.go.dev/fmt#Errorf">official docs</a>:</p>
+<blockquote>
+<p>If the format specifier includes a %w verb with an error operand, the returned error will implement an Unwrap method returning the operand.</p>
+</blockquote>
+<p>If you are using a custom error type, this is where the magic ends. Custom error types have to implement the <code>Unwrap</code> method in order to be chained. The <code>Unwrap</code> method has to return the original <code>error</code> like in the following example:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ErrWrap</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">e</span> <span style="color:#a6e22e">ErrWrap</span>) <span style="color:#a6e22e">Error</span>() <span style="color:#66d9ef">string</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;ErrWrap error: %s&#34;</span>, <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">err</span>)
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">e</span> <span style="color:#a6e22e">ErrWrap</span>) <span style="color:#a6e22e">Unwrap</span>() <span style="color:#66d9ef">error</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">err</span>
+}
+</code></pre></div><p>The <code>Unwrap</code> and error chaining are not always necessary. Sometimes returning a simple error is enough. Implementing the <code>Unwrap</code> method is required to use <code>errors.Is</code> and <code>errors.As</code>. Or rather, to use Wrapped errors, you must also know how and when to use <code>errors.As</code> and <code>errors.Is</code>.</p>
+<h2 id="errorsis"><code>errors.Is</code><a href="#errorsis" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p><code>errors.Is</code> is the answer to the problem that error wrapping introduces. In the example below, the error from <code>os.Open</code> is wrapped, making it impossible to further examine it with <code>==</code> such as <code>err == os.ErrNotExist</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">openFile</span>(<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#a6e22e">f</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">name</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;cannot open file: %w&#34;</span>, <span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+</code></pre></div><p>The <code>errors.Is</code> function allows you to check if a given error is in the error chain.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;openFile&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">openFile</span>(<span style="color:#e6db74">&#34;non-existent-file&#34;</span>)
+
+	<span style="color:#75715e">// the error is wrapped, so it is not os.ErrNotExist
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">False</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">ErrNotExist</span>)
+
+	<span style="color:#75715e">// however, we can check if the error os.ErrNotExist is wrapped
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">True</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">Is</span>(<span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">ErrNotExist</span>))
+})
+</code></pre></div><p>For more complex error types, refer to the <a href="https://pkg.go.dev/errors#Is">documentation</a> of <code>errors.Is</code>:</p>
+<blockquote>
+<p>The tree consists of err itself, followed by the errors obtained by repeatedly calling its Unwrap() error or Unwrap() []error method. When err wraps multiple errors, Is examines err followed by a depth-first traversal of its children.</p>
+</blockquote>
+<p>When calling <code>errors.Is</code>, the <code>Unwrap</code> method is used to recursively check errors within the chain. You can wrap multiple errors at once by using <code>%w</code> multiple times or by returning <code>[]error</code> in the <code>Unwrap</code> method for the custom type. This sounds like a corner case, though, and I want to focus on the simple <strong>error chain</strong> case. Going further with the documentation:</p>
+<blockquote>
+<p>An error is considered to match a target if it is equal to that target or if it implements a method Is(error) bool such that Is(target) returns true.</p>
+</blockquote>
+<p>A bug is lurking here. For custom error types, we might have to implement the <code>Is(target error) bool</code> method. If we don&rsquo;t do this when necessary, <code>errors.Is</code> might <strong>not detect errors in the chain</strong>. It is quite a pernicious design, but <code>Is</code> and <code>As</code> were added in Go 1.13, so it was rather an afterthought. Anyway, <code>errors.Is</code> <em>An error is considered to match a target if it is equal</em>. This means <code>==</code> is used. For <strong>some</strong> errors, that is alright. For example:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ErrWrap</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">e</span> <span style="color:#a6e22e">ErrWrap</span>) <span style="color:#a6e22e">Error</span>() <span style="color:#66d9ef">string</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;ErrWrap error: %s&#34;</span>, <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">err</span>)
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">e</span> <span style="color:#a6e22e">ErrWrap</span>) <span style="color:#a6e22e">Unwrap</span>() <span style="color:#66d9ef">error</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">err</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestWrapping</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;Unwrap&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+		<span style="color:#a6e22e">baseErr</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;base error&#34;</span>)
+		<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ErrWrap</span>{<span style="color:#a6e22e">err</span>: <span style="color:#a6e22e">baseErr</span>}
+		<span style="color:#a6e22e">wrapped</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;wrapped: %w&#34;</span>, <span style="color:#a6e22e">err</span>)
+		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">True</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">Is</span>(<span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">baseErr</span>))
+		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">True</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">Is</span>(<span style="color:#a6e22e">wrapped</span>, <span style="color:#a6e22e">err</span>))
+		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">True</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">Is</span>(<span style="color:#a6e22e">wrapped</span>, <span style="color:#a6e22e">baseErr</span>))
+	})
+}
+</code></pre></div><p><code>errors.Is</code> works as expected here. Both <code>baseErr</code> and <code>err</code> are detected in the chain for <code>wrapped</code> error. But let&rsquo;s make the <code>ErrWrap</code> type a little more complex by adding a slice field to the struct.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ErrWrap</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">codes</span> []<span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">err</span>   <span style="color:#66d9ef">error</span>
+}
+</code></pre></div><p>Without any code changes, the test will fail for the following assertion: <code>assert.True(t, errors.Is(wrapped, err))</code>. Why isn&rsquo;t <code>err</code> (which is the <code>ErrWrap</code>) detected to be in the chain, but the <code>baseErr</code> that is the sentinel error is detected correctly? That is because <code>ErrWrap</code> now consists of a <code>[]int</code> slice that is not comparable. This can be expressed as the assertion: <code>assert.False(t, reflect.TypeOf(err).Comparable())</code>. So <strong>if the custom error type is not comparable, we must write our own Is method</strong>.</p>
+<p>In our case, we have to do a type assertion and compare the slices with reflect as follows:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">e</span> <span style="color:#a6e22e">ErrWrap</span>) <span style="color:#a6e22e">Is</span>(<span style="color:#a6e22e">target</span> <span style="color:#66d9ef">error</span>) <span style="color:#66d9ef">bool</span> {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">target</span>.(<span style="color:#a6e22e">ErrWrap</span>); <span style="color:#a6e22e">ok</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">DeepEqual</span>(<span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">codes</span>, <span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">codes</span>)
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+}
+</code></pre></div><p>This fixes the failing tests. If you are new to type assertions, you can check them out on this <a href="https://go.dev/tour/methods/15">playground</a>.</p>
+<h2 id="errorsas"><code>errors.As</code><a href="#errorsas" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p><code>errors.As</code> traverses through the error tree/chain and checks if a given error is of a given type. If so, it assigns the error to a target pointer. It unwraps the error chain and checks each error to see if it can be assigned to the target type. It&rsquo;s useful when you want to inspect the details of a specific type of error.</p>
+<p>Following the <code>ErrWrap</code> error type from the section above, we can quickly test it:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;errors.As&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+	<span style="color:#a6e22e">baseErr</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;base error&#34;</span>)
+	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ErrWrap</span>{<span style="color:#a6e22e">err</span>: <span style="color:#a6e22e">baseErr</span>, <span style="color:#a6e22e">codes</span>: []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>}}
+	<span style="color:#a6e22e">wrapped</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;wrapped: %w&#34;</span>, <span style="color:#a6e22e">err</span>)
+
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">errWrap</span> <span style="color:#a6e22e">ErrWrap</span>
+	<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">True</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">As</span>(<span style="color:#a6e22e">wrapped</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">errWrap</span>))
+	<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">Equal</span>(<span style="color:#a6e22e">t</span>, []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>}, <span style="color:#a6e22e">errWrap</span>.<span style="color:#a6e22e">codes</span>)
+})
+</code></pre></div><p>If you understand how <code>Is</code> works, <code>As</code> is pretty straightforward. A few words of caution, though:</p>
+<blockquote>
+<p>As panics if target is not a non-nil pointer to either a type that implements error or to any interface type.</p>
+</blockquote>
+<p>So the second argument to <code>errors.As</code> must be a non-nil pointer to either a type that implements error or to any interface type. If you pass anything other than a pointer to an error or a pointer to an interface, the method will panic.</p>
+<h2 id="conclusion">Conclusion<a href="#conclusion" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Most of the error handling in Go revolves around error wrapping. If you understand <code>Unwrap</code>, <code>Is</code>, and <code>As</code>, you are set. While constantly typing <code>if err != nil</code> might feel daunting, having a single logic flow makes the Go code much easier to reason with. Error wrapping has been added since <code>1.13</code>, and it is a bit awkward, but good enough to follow the idiomatic approach. I skipped <code>panics</code> to keep this read short, but if you are interested in <code>panic/recover</code>, which is essentially the exceptions in Go, refer to this <a href="https://go.dev/wiki/PanicAndRecover">doc</a>.</p>
+
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        
+        <span class="button next">
+            <a href="/posts/testing-exec-cmd-in-go/">
+                <span class="button__text">Mocking and testing the `exec.Cmd`</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2024 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

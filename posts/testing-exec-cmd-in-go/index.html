@@ -8,28 +8,87 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Short explanation of a patter for testing and mocking the exec.Cmd" />
 <meta name="keywords" content="" />
-<meta name="robots" content="noodp" />
+
+  <meta name="robots" content="noodp" />
+
 <link rel="canonical" href="/posts/testing-exec-cmd-in-go/" />
 
 
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-MKNW2NYRPT"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-MKNW2NYRPT');
+        }
+      </script>
 
 
-<link rel="stylesheet" href="/assets/style.css">
 
-  <link rel="stylesheet" href="/assets/green.css">
+  
+  <link rel="stylesheet" href="/css/buttons.min.2bc533403a27dfe0e93105a92502b42ce4587e2e4a87d9f7d349e51e16e09478.css">
+
+  
+  <link rel="stylesheet" href="/css/code.min.00125962708925857e7b66dbc58391d55be1191a3d0ce2034de8c9cd2c481c36.css">
+
+  
+  <link rel="stylesheet" href="/css/fonts.min.90c955c31dd7c0e05aae3d4f583d4d8a2af799d69c961337eaf2a825063a55dd.css">
+
+  
+  <link rel="stylesheet" href="/css/footer.min.2e3eb191baee58dd05a9f0104ac1fab0827bca7c64dafe0b2579f934c33a1d69.css">
+
+  
+  <link rel="stylesheet" href="/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="/css/header.min.b6fb4423cf82a9f9d7abc9cd010223fa3d70a6526a3f28f8e17d814c06e18f9e.css">
+
+  
+  <link rel="stylesheet" href="/css/main.min.1d8be2dd1b5de9fdaed058c8c59fcf4485f36619574abfb47ed0cfda4812c16d.css">
+
+  
+  <link rel="stylesheet" href="/css/menu.min.83637a90d903026bc280d3f82f96ceb06c5fc72b7c1a8d686afb5bbf818a29f7.css">
+
+  
+  <link rel="stylesheet" href="/css/pagination.min.82f6400eae7c7c6dc3c866733c2ec0579e4089608fea69400ff85b3880aa0d3c.css">
+
+  
+  <link rel="stylesheet" href="/css/post.min.fc74ca360273c1d828da3c02b8174eba435607b369d98418ccc6f2243cd4e75d.css">
+
+  
+  <link rel="stylesheet" href="/css/prism.min.9023bbc24533d09e97a51a0a42a5a7bfe4c591ae167c5551fb1d2191d11977c0.css">
+
+  
+  <link rel="stylesheet" href="/css/syntax.min.cc789ed9377260d7949ea4c18781fc58959a89287210fe4edbff44ebfc1511b6.css">
+
+  
+  <link rel="stylesheet" href="/css/terminal.min.736caf886baa67df630c4cde30fbdc5115122eb74c6246f15a31401344bfa2f0.css">
+
+  
+  <link rel="stylesheet" href="/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+<link rel="stylesheet" href="/terminal.css">
 
 
 
 
-
-
-<link rel="apple-touch-icon" href="/img/apple-touch-icon-192x192.png">
-
-  <link rel="shortcut icon" href="/img/favicon/green.png">
-
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
 
 <meta name="twitter:card" content="summary" />
+
+  
+    <meta name="twitter:site" content="b1_88er" />
+  
+    <meta name="twitter:creator" content="" />
 
 
 
@@ -40,12 +99,10 @@
 <meta property="og:url" content="/posts/testing-exec-cmd-in-go/" />
 <meta property="og:site_name" content="b1-88er blog" />
 
-  
-    <meta property="og:image" content="/img/favicon/green.png">
-  
+  <meta property="og:image" content="/og-image.png">
 
-<meta property="og:image:width" content="2048">
-<meta property="og:image:height" content="1024">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
 
 
   <meta property="article:published_time" content="2024-04-28 00:00:00 &#43;0000 UTC" />
@@ -62,10 +119,10 @@
 
 
 </head>
-<body class="green">
+<body>
 
 
-<div class="container center headings--one-size">
+<div class="container center">
 
   <header class="header">
   <div class="header__inner">
@@ -78,30 +135,33 @@
 
     </div>
     
-      <div class="menu-trigger">menu</div>
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/cv.html">Hire Me</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
     
   </div>
   
-    <nav class="menu">
-  <ul class="menu__inner menu__inner--desktop">
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
     
       
         
-          <li><a href="/cv.html">Hire me</a></li>
+          <li><a href="/cv.html" >Hire Me</a></li>
         
       
       
-    
-
-    
-  </ul>
-
-  <ul class="menu__inner menu__inner--mobile">
-    
-      
-        <li><a href="/cv.html">Hire me</a></li>
-      
-    
     
   </ul>
 </nav>
@@ -112,29 +172,23 @@
 
   <div class="content">
     
-<div class="post">
+<article class="post">
   <h1 class="post-title">
-    <a href="/posts/testing-exec-cmd-in-go/">Mocking and testing the <code>exec.Cmd</code></a></h1>
-  <div class="post-meta">
-    
-      <span class="post-date">
-        2024-04-28 
-      </span>
-    
-    
-  </div>
+    <a href="/posts/testing-exec-cmd-in-go/">Mocking and testing the <code>exec.Cmd</code></a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2024-04-28</time></div>
 
   
-  <span class="post-tags">
-    
-    #<a href="/tags/golang/">golang</a>&nbsp;
-    
-    #<a href="/tags/GOtchas/">GOtchas</a>&nbsp;
-    
-  </span>
+    <span class="post-tags">
+      
+      #<a href="/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="/tags/GOtchas/">GOtchas</a>&nbsp;
+      
+    </span>
+  
   
 
-  
 
   
 
@@ -145,93 +199,93 @@ It was not obvious to me even when I found the answer. In fact I was scratching 
 <ol>
 <li>Tested function should take <code>*exec.Cmd</code>.</li>
 <li>To mock the <code>exec.Cmd</code> wrap it with function that will invoke the specific test in the same file.
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">mockCmd</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span> {
-    <span style="color:#a6e22e">args</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;-test.run=TestProcessHelper&#34;</span>}
-    <span style="color:#a6e22e">cmd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Command</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">0</span>], <span style="color:#a6e22e">args</span><span style="color:#f92672">...</span>)
-    <span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span> = append(<span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span>, <span style="color:#e6db74">&#34;GO_WANT_HELPER_PROCESS=1&#34;</span>)
-    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cmd</span>
-}
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">mockCmd</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">args</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;-test.run=TestProcessHelper&#34;</span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">cmd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Command</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">0</span>], <span style="color:#a6e22e">args</span><span style="color:#f92672">...</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span> = append(<span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span>, <span style="color:#e6db74">&#34;GO_WANT_HELPER_PROCESS=1&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cmd</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
 <li>And trap the execution in that <code>TestProcessHelper</code> and perform operations to be tested.
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestProcessHelper</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
-    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Getenv</span>(<span style="color:#e6db74">&#34;GO_WANT_HELPER_PROCESS&#34;</span>) <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;1&#34;</span> {
-        <span style="color:#66d9ef">return</span>
-    }
-    <span style="color:#75715e">// Do what you want the mocked process to do.
-</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Exit</span>(<span style="color:#ae81ff">0</span>)
-}
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestProcessHelper</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Getenv</span>(<span style="color:#e6db74">&#34;GO_WANT_HELPER_PROCESS&#34;</span>) <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;1&#34;</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Do what you want the mocked process to do.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Exit</span>(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
 </ol>
 <p><em>This approach works.</em> Now it is time to dissasemble the concept with an example. I will show how this techinque works, step by step.</p>
-<h1 id="sample-program-using-execcmd">Sample program using <code>exec.Cmd</code><a href="#sample-program-using-execcmd" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<h1 id="sample-program-using-execcmd">Sample program using <code>exec.Cmd</code><a href="#sample-program-using-execcmd" class="hanchor" ariaLabel="Anchor">#</a> </h1>
 <p>Consider the following example of a code that lists &ldquo;commands&rdquo; using the network.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">lsof</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span> {
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Command</span>(<span style="color:#e6db74">&#34;lsof&#34;</span>, <span style="color:#e6db74">&#34;-i&#34;</span>, <span style="color:#e6db74">&#34;-n&#34;</span>, <span style="color:#e6db74">&#34;-P&#34;</span>, <span style="color:#e6db74">&#34;-F&#34;</span>, <span style="color:#e6db74">&#34;-nP&#34;</span>)
-}
-
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">connectedProcesses</span>(<span style="color:#a6e22e">cmd</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span>) ([]<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>) {
-	<span style="color:#a6e22e">commands</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">string</span>, <span style="color:#ae81ff">0</span>)
-
-	<span style="color:#a6e22e">out</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Output</span>()
-	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
-		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
-	}
-
-	<span style="color:#a6e22e">scanner</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bufio</span>.<span style="color:#a6e22e">NewScanner</span>(<span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">out</span>))
-	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">scanner</span>.<span style="color:#a6e22e">Scan</span>() {
-		<span style="color:#a6e22e">line</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">scanner</span>.<span style="color:#a6e22e">Text</span>()
-		<span style="color:#75715e">// command lines start with &#39;c&#39;
-</span><span style="color:#75715e"></span>		<span style="color:#75715e">// avoid duplicates
-</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">HasPrefix</span>(<span style="color:#a6e22e">line</span>, <span style="color:#e6db74">&#34;c&#34;</span>) <span style="color:#f92672">&amp;&amp;</span> !<span style="color:#a6e22e">slices</span>.<span style="color:#a6e22e">Contains</span>(<span style="color:#a6e22e">commands</span>, <span style="color:#a6e22e">line</span>[<span style="color:#ae81ff">1</span>:]) {
-			<span style="color:#a6e22e">commands</span> = append(<span style="color:#a6e22e">commands</span>, <span style="color:#a6e22e">line</span>[<span style="color:#ae81ff">1</span>:])
-		}
-	}
-
-	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">scanner</span>.<span style="color:#a6e22e">Err</span>(); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
-		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
-	}
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">commands</span>, <span style="color:#66d9ef">nil</span>
-
-}
-
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestCmdMocking</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
-	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;test connectedProcesses&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
-		<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">connectedProcesses</span>(<span style="color:#a6e22e">lsof</span>())
-		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NoError</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">err</span>)
-		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NotNil</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">result</span>)
-		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">result</span>)
-	})
-}
-</code></pre></div><p>The program will return a slice of unique commands that use the network.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">lsof</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Command</span>(<span style="color:#e6db74">&#34;lsof&#34;</span>, <span style="color:#e6db74">&#34;-i&#34;</span>, <span style="color:#e6db74">&#34;-n&#34;</span>, <span style="color:#e6db74">&#34;-P&#34;</span>, <span style="color:#e6db74">&#34;-F&#34;</span>, <span style="color:#e6db74">&#34;-nP&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">connectedProcesses</span>(<span style="color:#a6e22e">cmd</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span>) ([]<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">commands</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">string</span>, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">out</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Output</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">scanner</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bufio</span>.<span style="color:#a6e22e">NewScanner</span>(<span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">out</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">scanner</span>.<span style="color:#a6e22e">Scan</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">line</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">scanner</span>.<span style="color:#a6e22e">Text</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// command lines start with &#39;c&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#75715e">// avoid duplicates
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">HasPrefix</span>(<span style="color:#a6e22e">line</span>, <span style="color:#e6db74">&#34;c&#34;</span>) <span style="color:#f92672">&amp;&amp;</span> !<span style="color:#a6e22e">slices</span>.<span style="color:#a6e22e">Contains</span>(<span style="color:#a6e22e">commands</span>, <span style="color:#a6e22e">line</span>[<span style="color:#ae81ff">1</span>:]) {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">commands</span> = append(<span style="color:#a6e22e">commands</span>, <span style="color:#a6e22e">line</span>[<span style="color:#ae81ff">1</span>:])
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">scanner</span>.<span style="color:#a6e22e">Err</span>(); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">commands</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestCmdMocking</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;test connectedProcesses&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">connectedProcesses</span>(<span style="color:#a6e22e">lsof</span>())
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NoError</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NotNil</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">result</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">result</span>)
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The program will return a slice of unique commands that use the network.</p>
 <ol>
 <li>Take the <code>Output()</code> of the <code>lsof -i -n -P -F -nP</code>.</li>
 <li>Read the output.</li>
 <li>Build an unique slice of lines that start with the <code>c</code> character and store in <code>commands</code>.</li>
 </ol>
 <p>A sample result will of course depend on the OS and software you are running:</p>
-<pre><code>[loginwindow rapportd identityservicesd ...]
-</code></pre><h1 id="writing-the-mock-function">Writing the mock function.<a href="#writing-the-mock-function" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<pre tabindex="0"><code>[loginwindow rapportd identityservicesd ...]
+</code></pre><h1 id="writing-the-mock-function">Writing the mock function.<a href="#writing-the-mock-function" class="hanchor" ariaLabel="Anchor">#</a> </h1>
 <p>We need to change the behavior of the <code>lsof()</code> function. There are 2 requirements.</p>
 <ol>
 <li><code>mockLsof</code> must still return <code>exec.Cmd</code>.</li>
 <li>Instead of calling <code>lsof</code> tool, output and behavior must be fully controlled by the test.</li>
 </ol>
 <p>The <code>mockLsof</code> function should look like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">mockLsof</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span> {
-	<span style="color:#a6e22e">args</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;-test.run=TestProcessHelper&#34;</span>, <span style="color:#e6db74">&#34;lsof&#34;</span>}
-	<span style="color:#a6e22e">cmd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Command</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">0</span>], <span style="color:#a6e22e">args</span><span style="color:#f92672">...</span>)
-	<span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span> = append(<span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span>, <span style="color:#e6db74">&#34;GO_WANT_HELPER_PROCESS=1&#34;</span>)
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cmd</span>
-}
-</code></pre></div><p>Mock still returns <code>exec.Cmd</code> but it no longer calls the <code>lsof</code> command but whatever is behind the <code>os.Args[0]</code>.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">mockLsof</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">args</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;-test.run=TestProcessHelper&#34;</span>, <span style="color:#e6db74">&#34;lsof&#34;</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cmd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Command</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">0</span>], <span style="color:#a6e22e">args</span><span style="color:#f92672">...</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span> = append(<span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span>, <span style="color:#e6db74">&#34;GO_WANT_HELPER_PROCESS=1&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cmd</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Mock still returns <code>exec.Cmd</code> but it no longer calls the <code>lsof</code> command but whatever is behind the <code>os.Args[0]</code>.
 On top of that the arguments to the new command are <code>-test.run=TestProcessHelper</code> and <code>lsof</code>. By attaching the debugger, we can inspect what command is going to be called in detail (<code>cmd.Args</code>).</p>
-<pre><code>[
-    &quot;/Users/me/work/blog/__debug_bin1727994439&quot;,
-    &quot;-test.run=TestProcessHelper&quot;,
-    &quot;lsof&quot;
+<pre tabindex="0"><code>[
+    &#34;/Users/me/work/blog/__debug_bin1727994439&#34;,
+    &#34;-test.run=TestProcessHelper&#34;,
+    &#34;lsof&#34;
 ]
 </code></pre><p>Lets disect these arguments before going forward.</p>
-<h2 id="usersmeworkblog__debug_bin1727994439">&ldquo;/Users/me/work/blog/__debug_bin1727994439&rdquo;<a href="#usersmeworkblog__debug_bin1727994439" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="usersmeworkblog__debug_bin1727994439">&ldquo;/Users/me/work/blog/__debug_bin1727994439&rdquo;<a href="#usersmeworkblog__debug_bin1727994439" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>The <code>__debug_bin1727994439</code> binary is an intermediate binary created by Go during the test process to compile and execute your tests efficiently. Once the tests are done, this binary is usually deleted.</p>
 <p>Here&rsquo;s how it works:</p>
 <ol>
@@ -239,177 +293,177 @@ On top of that the arguments to the new command are <code>-test.run=TestProcessH
 <li>Execution: Go then runs the __debug_bin binary, executing the test functions and reporting the results.</li>
 <li>Cleanup: After the tests are executed, the __debug_bin binary is typically deleted. It&rsquo;s a temporary file used solely for the purpose of test execution.</li>
 </ol>
-<h2 id="-testruntestprocesshelper">&ldquo;-test.run=TestProcessHelper&rdquo;<a href="#-testruntestprocesshelper" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="-testruntestprocesshelper">&ldquo;-test.run=TestProcessHelper&rdquo;<a href="#-testruntestprocesshelper" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>You can check yourself what the <code>-test.run</code> flag does by calling the binary (you need to pause the test with debugger).</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">./__debug_bin3519903229 -help
-<span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
-  -test.run regexp
-    	run only tests and examples matching regexp
-<span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
-</code></pre></div><p>By calling the temporary binary with the <code>-test.run=TestProcessHelper</code> we specifically say we are going to execute a single test.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./__debug_bin3519903229 -help
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  -test.run regexp
+</span></span><span style="display:flex;"><span>    	run only tests and examples matching regexp
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>By calling the temporary binary with the <code>-test.run=TestProcessHelper</code> we specifically say we are going to execute a single test.</p>
 <p><code>lsof</code> is an argument passed to the <code>TestProcessHelper</code> function that we are going to implement now.</p>
-<h1 id="testprocesshelper-and-calling-itself">TestProcessHelper and calling itself.<a href="#testprocesshelper-and-calling-itself" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<h1 id="testprocesshelper-and-calling-itself">TestProcessHelper and calling itself.<a href="#testprocesshelper-and-calling-itself" class="hanchor" ariaLabel="Anchor">#</a> </h1>
 <p>So far we replaced calling <code>lsof</code> command with execution of the <code>TestProcessHelper</code> function in the same test suite.
 Time to implement <code>TestProcessHelper</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestProcessHelper</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
-	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Getenv</span>(<span style="color:#e6db74">&#34;GO_WANT_HELPER_PROCESS&#34;</span>) <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;1&#34;</span> {
-		<span style="color:#66d9ef">return</span>
-	}
-	<span style="color:#75715e">// os.Args[0] is the temp file created by go test
-</span><span style="color:#75715e"></span>	<span style="color:#75715e">// go-by-tests/__debug_bin2203103022
-</span><span style="color:#75715e"></span>	<span style="color:#75715e">// os.Args[1] -test.run=TestProcessHelper
-</span><span style="color:#75715e"></span>	<span style="color:#75715e">// os.Args[2] whatever we pass to the command
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>) &gt; <span style="color:#ae81ff">2</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;lsof&#34;</span> {
-		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Fprint</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>, <span style="color:#e6db74">&#34;cCOMMAND1\ncCOMMAND2\ncCOMMAND3&#34;</span>)
-		<span style="color:#66d9ef">return</span>
-	}
-	<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Exit</span>(<span style="color:#ae81ff">0</span>)
-}
-</code></pre></div><p>We set the <code>GO_WANT_HELPER_PROCESS=1</code> env in the <code>mockLsof</code> to make sure it executes only when needed. Otherwise, futher logic would execute when running <code>go test</code>.
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestProcessHelper</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Getenv</span>(<span style="color:#e6db74">&#34;GO_WANT_HELPER_PROCESS&#34;</span>) <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;1&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// os.Args[0] is the temp file created by go test
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// go-by-tests/__debug_bin2203103022
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// os.Args[1] -test.run=TestProcessHelper
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// os.Args[2] whatever we pass to the command
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>) &gt; <span style="color:#ae81ff">2</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;lsof&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Fprint</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>, <span style="color:#e6db74">&#34;cCOMMAND1\ncCOMMAND2\ncCOMMAND3&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Exit</span>(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We set the <code>GO_WANT_HELPER_PROCESS=1</code> env in the <code>mockLsof</code> to make sure it executes only when needed. Otherwise, futher logic would execute when running <code>go test</code>.
 The function detects if <code>lsof</code> is passed as positional argument and mocks it&rsquo;s behavior.
 This allows us to mock the <code>lsof</code> behavior without mocking the entire <code>exec.Cmd</code> functionality.</p>
 <p>Now it is the time to run the test itself:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;mocked connectedProcesses&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
-    <span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">connectedProcesses</span>(<span style="color:#a6e22e">mockLsof</span>())
-    <span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NoError</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">err</span>)
-    <span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NotNil</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">result</span>)
-    <span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">Equal</span>(<span style="color:#a6e22e">t</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;COMMAND1&#34;</span>, <span style="color:#e6db74">&#34;COMMAND2&#34;</span>, <span style="color:#e6db74">&#34;COMMAND3PASS&#34;</span>}, <span style="color:#a6e22e">result</span>)
-})
-</code></pre></div><p>In the <code>TestProcessHelper</code> we write <code>cCOMMAND1\ncCOMMAND2\ncCOMMAND3</code> to <code>os.Stdout</code>. Consequetly we expect the adequate output from the <code>connectedProcesses</code> function. Note the <code>PASS</code> at the end that is added at the end of the stdout. This is because we actually have run a test.</p>
-<h1 id="conclusion">Conclusion<a href="#conclusion" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;mocked connectedProcesses&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">connectedProcesses</span>(<span style="color:#a6e22e">mockLsof</span>())
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NoError</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NotNil</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">result</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">Equal</span>(<span style="color:#a6e22e">t</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;COMMAND1&#34;</span>, <span style="color:#e6db74">&#34;COMMAND2&#34;</span>, <span style="color:#e6db74">&#34;COMMAND3PASS&#34;</span>}, <span style="color:#a6e22e">result</span>)
+</span></span><span style="display:flex;"><span>})
+</span></span></code></pre></div><p>In the <code>TestProcessHelper</code> we write <code>cCOMMAND1\ncCOMMAND2\ncCOMMAND3</code> to <code>os.Stdout</code>. Consequetly we expect the adequate output from the <code>connectedProcesses</code> function. Note the <code>PASS</code> at the end that is added at the end of the stdout. This is because we actually have run a test.</p>
+<h1 id="conclusion">Conclusion<a href="#conclusion" class="hanchor" ariaLabel="Anchor">#</a> </h1>
 <p>Next time you find yourself needing to test code that interacts with external processes, remember this approach. With a little bit of setup and understanding, you can ensure your code remains testable and maintainable even in the face of external dependencies.</p>
 <p>full code example:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
-
-<span style="color:#f92672">import</span> (
-	<span style="color:#e6db74">&#34;bufio&#34;</span>
-	<span style="color:#e6db74">&#34;bytes&#34;</span>
-	<span style="color:#e6db74">&#34;fmt&#34;</span>
-	<span style="color:#e6db74">&#34;os&#34;</span>
-	<span style="color:#e6db74">&#34;os/exec&#34;</span>
-	<span style="color:#e6db74">&#34;slices&#34;</span>
-	<span style="color:#e6db74">&#34;strings&#34;</span>
-	<span style="color:#e6db74">&#34;testing&#34;</span>
-
-	<span style="color:#e6db74">&#34;github.com/stretchr/testify/assert&#34;</span>
-)
-
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">lsof</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span> {
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Command</span>(<span style="color:#e6db74">&#34;lsof&#34;</span>, <span style="color:#e6db74">&#34;-i&#34;</span>, <span style="color:#e6db74">&#34;-n&#34;</span>, <span style="color:#e6db74">&#34;-P&#34;</span>, <span style="color:#e6db74">&#34;-F&#34;</span>, <span style="color:#e6db74">&#34;-nP&#34;</span>)
-}
-
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">mockLsof</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span> {
-	<span style="color:#a6e22e">args</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;-test.run=TestProcessHelper&#34;</span>, <span style="color:#e6db74">&#34;lsof&#34;</span>}
-	<span style="color:#a6e22e">cmd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Command</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">0</span>], <span style="color:#a6e22e">args</span><span style="color:#f92672">...</span>)
-	<span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span> = append(<span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span>, <span style="color:#e6db74">&#34;GO_WANT_HELPER_PROCESS=1&#34;</span>)
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cmd</span>
-}
-
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">mockCmd</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span> {
-	<span style="color:#a6e22e">args</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;-test.run=TestProcessHelper&#34;</span>}
-	<span style="color:#a6e22e">cmd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Command</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">0</span>], <span style="color:#a6e22e">args</span><span style="color:#f92672">...</span>)
-	<span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span> = append(<span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span>, <span style="color:#e6db74">&#34;GO_WANT_HELPER_PROCESS=1&#34;</span>)
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cmd</span>
-}
-
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">connectedProcesses</span>(<span style="color:#a6e22e">cmd</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span>) ([]<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>) {
-	<span style="color:#a6e22e">commands</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">string</span>, <span style="color:#ae81ff">0</span>)
-
-	<span style="color:#a6e22e">out</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Output</span>()
-	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
-		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
-	}
-
-	<span style="color:#a6e22e">scanner</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bufio</span>.<span style="color:#a6e22e">NewScanner</span>(<span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">out</span>))
-	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">scanner</span>.<span style="color:#a6e22e">Scan</span>() {
-		<span style="color:#a6e22e">line</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">scanner</span>.<span style="color:#a6e22e">Text</span>()
-		<span style="color:#75715e">// command lines start with &#39;c&#39;
-</span><span style="color:#75715e"></span>		<span style="color:#75715e">// avoid duplicates
-</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">HasPrefix</span>(<span style="color:#a6e22e">line</span>, <span style="color:#e6db74">&#34;c&#34;</span>) <span style="color:#f92672">&amp;&amp;</span> !<span style="color:#a6e22e">slices</span>.<span style="color:#a6e22e">Contains</span>(<span style="color:#a6e22e">commands</span>, <span style="color:#a6e22e">line</span>[<span style="color:#ae81ff">1</span>:]) {
-			<span style="color:#a6e22e">commands</span> = append(<span style="color:#a6e22e">commands</span>, <span style="color:#a6e22e">line</span>[<span style="color:#ae81ff">1</span>:])
-		}
-	}
-
-	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">scanner</span>.<span style="color:#a6e22e">Err</span>(); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
-		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
-	}
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">commands</span>, <span style="color:#66d9ef">nil</span>
-
-}
-
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestProcessHelper</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
-	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Getenv</span>(<span style="color:#e6db74">&#34;GO_WANT_HELPER_PROCESS&#34;</span>) <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;1&#34;</span> {
-		<span style="color:#66d9ef">return</span>
-	}
-	<span style="color:#75715e">// os.Args[0] is the temp file created by go test
-</span><span style="color:#75715e"></span>	<span style="color:#75715e">// go-by-tests/__debug_bin2203103022
-</span><span style="color:#75715e"></span>	<span style="color:#75715e">// os.Args[1] -test.run=TestProcessHelper
-</span><span style="color:#75715e"></span>	<span style="color:#75715e">// os.Args[2] whatever we pass to the command
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>) &gt; <span style="color:#ae81ff">2</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;lsof&#34;</span> {
-		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Fprint</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>, <span style="color:#e6db74">&#34;cCOMMAND1\ncCOMMAND2\ncCOMMAND3&#34;</span>)
-		<span style="color:#66d9ef">return</span>
-	}
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Fprint</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>, <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">1</span>:])
-	<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Exit</span>(<span style="color:#ae81ff">0</span>)
-}
-
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestCmdMocking</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
-
-	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;basic test&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
-		<span style="color:#a6e22e">cmd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mockCmd</span>()
-		<span style="color:#a6e22e">output</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Output</span>()
-		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NoError</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">err</span>)
-		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">Equal</span>(<span style="color:#a6e22e">t</span>, <span style="color:#e6db74">&#34;[-test.run=TestProcessHelper]&#34;</span>, string(<span style="color:#a6e22e">output</span>))
-	})
-	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;test connectedProcesses&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
-		<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">connectedProcesses</span>(<span style="color:#a6e22e">lsof</span>())
-		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NoError</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">err</span>)
-		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NotNil</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">result</span>)
-	})
-
-	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;mocked connectedProcesses&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
-		<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">connectedProcesses</span>(<span style="color:#a6e22e">mockLsof</span>())
-		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NoError</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">err</span>)
-		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NotNil</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">result</span>)
-		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">Equal</span>(<span style="color:#a6e22e">t</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;COMMAND1&#34;</span>, <span style="color:#e6db74">&#34;COMMAND2&#34;</span>, <span style="color:#e6db74">&#34;COMMAND3PASS&#34;</span>}, <span style="color:#a6e22e">result</span>)
-	})
-
-}
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;bufio&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;bytes&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;os&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;os/exec&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;slices&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;strings&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;testing&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;github.com/stretchr/testify/assert&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">lsof</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Command</span>(<span style="color:#e6db74">&#34;lsof&#34;</span>, <span style="color:#e6db74">&#34;-i&#34;</span>, <span style="color:#e6db74">&#34;-n&#34;</span>, <span style="color:#e6db74">&#34;-P&#34;</span>, <span style="color:#e6db74">&#34;-F&#34;</span>, <span style="color:#e6db74">&#34;-nP&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">mockLsof</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">args</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;-test.run=TestProcessHelper&#34;</span>, <span style="color:#e6db74">&#34;lsof&#34;</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cmd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Command</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">0</span>], <span style="color:#a6e22e">args</span><span style="color:#f92672">...</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span> = append(<span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span>, <span style="color:#e6db74">&#34;GO_WANT_HELPER_PROCESS=1&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cmd</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">mockCmd</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">args</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;-test.run=TestProcessHelper&#34;</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cmd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Command</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">0</span>], <span style="color:#a6e22e">args</span><span style="color:#f92672">...</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span> = append(<span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Env</span>, <span style="color:#e6db74">&#34;GO_WANT_HELPER_PROCESS=1&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cmd</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">connectedProcesses</span>(<span style="color:#a6e22e">cmd</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Cmd</span>) ([]<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">commands</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">string</span>, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">out</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Output</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">scanner</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bufio</span>.<span style="color:#a6e22e">NewScanner</span>(<span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">out</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">scanner</span>.<span style="color:#a6e22e">Scan</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">line</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">scanner</span>.<span style="color:#a6e22e">Text</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// command lines start with &#39;c&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#75715e">// avoid duplicates
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">HasPrefix</span>(<span style="color:#a6e22e">line</span>, <span style="color:#e6db74">&#34;c&#34;</span>) <span style="color:#f92672">&amp;&amp;</span> !<span style="color:#a6e22e">slices</span>.<span style="color:#a6e22e">Contains</span>(<span style="color:#a6e22e">commands</span>, <span style="color:#a6e22e">line</span>[<span style="color:#ae81ff">1</span>:]) {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">commands</span> = append(<span style="color:#a6e22e">commands</span>, <span style="color:#a6e22e">line</span>[<span style="color:#ae81ff">1</span>:])
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">scanner</span>.<span style="color:#a6e22e">Err</span>(); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">commands</span>, <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestProcessHelper</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Getenv</span>(<span style="color:#e6db74">&#34;GO_WANT_HELPER_PROCESS&#34;</span>) <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;1&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// os.Args[0] is the temp file created by go test
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// go-by-tests/__debug_bin2203103022
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// os.Args[1] -test.run=TestProcessHelper
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// os.Args[2] whatever we pass to the command
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>) &gt; <span style="color:#ae81ff">2</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;lsof&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Fprint</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>, <span style="color:#e6db74">&#34;cCOMMAND1\ncCOMMAND2\ncCOMMAND3&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Fprint</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>, <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">1</span>:])
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Exit</span>(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestCmdMocking</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;basic test&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">cmd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mockCmd</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">output</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cmd</span>.<span style="color:#a6e22e">Output</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NoError</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">Equal</span>(<span style="color:#a6e22e">t</span>, <span style="color:#e6db74">&#34;[-test.run=TestProcessHelper]&#34;</span>, string(<span style="color:#a6e22e">output</span>))
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;test connectedProcesses&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">connectedProcesses</span>(<span style="color:#a6e22e">lsof</span>())
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NoError</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NotNil</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">result</span>)
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;mocked connectedProcesses&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">connectedProcesses</span>(<span style="color:#a6e22e">mockLsof</span>())
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NoError</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">NotNil</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">result</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">Equal</span>(<span style="color:#a6e22e">t</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;COMMAND1&#34;</span>, <span style="color:#e6db74">&#34;COMMAND2&#34;</span>, <span style="color:#e6db74">&#34;COMMAND3PASS&#34;</span>}, <span style="color:#a6e22e">result</span>)
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
       </div></div>
 
   
-  
+    
 <div class="pagination">
-    <div class="pagination__title">
-        <span class="pagination__title-h">Read other posts</span>
-        <hr />
-    </div>
-    <div class="pagination__buttons">
-        
-        <span class="button previous">
-            <a href="/posts/errors-is-as-wrap/">
-                <span class="button__icon">←</span>
-                <span class="button__text">GoLang&#39;s approach to error handling.</span>
-            </a>
-        </span>
-        
-        
-        <span class="button next">
-            <a href="/posts/pointer-as-arguments/">
-                <span class="button__text">Passing pointers as arguments in Go</span>
-                <span class="button__icon">→</span>
-            </a>
-        </span>
-        
-    </div>
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="/posts/errors-is-as-wrap/" class="button inline prev">
+        GoLang&#39;s approach to error handling.
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="/posts/pointer-as-arguments/" class="button inline next">
+        Passing pointers as arguments in Go
+      </a>
+    
+  </div>
 </div>
+
 
   
 
   
+    
 
-</div>
+  
+</article>
 
   </div>
 
@@ -418,17 +472,19 @@ This allows us to mock the <code>lsof</code> behavior without mocking the entire
   <div class="footer__inner">
     
       <div class="copyright">
-        <span>© 2024 Powered by <a href="http://gohugo.io">Hugo</a></span>
+        <span>© 2024 Powered by <a href="https://gohugo.io">Hugo</a></span>
     
-        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
       </div>
   </div>
 </footer>
 
-<script src="/assets/main.js"></script>
-<script src="/assets/prism.js"></script>
 
 
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
 
 
 

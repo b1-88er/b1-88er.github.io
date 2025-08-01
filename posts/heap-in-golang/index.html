@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Heaps in Golang, a practical guide. :: b1-88er blog</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Heap data structure in Golang." />
+<meta name="keywords" content="" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="/posts/heap-in-golang/" />
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-MKNW2NYRPT"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-MKNW2NYRPT');
+        }
+      </script>
+
+
+
+  
+  <link rel="stylesheet" href="/css/buttons.min.2bc533403a27dfe0e93105a92502b42ce4587e2e4a87d9f7d349e51e16e09478.css">
+
+  
+  <link rel="stylesheet" href="/css/code.min.00125962708925857e7b66dbc58391d55be1191a3d0ce2034de8c9cd2c481c36.css">
+
+  
+  <link rel="stylesheet" href="/css/fonts.min.90c955c31dd7c0e05aae3d4f583d4d8a2af799d69c961337eaf2a825063a55dd.css">
+
+  
+  <link rel="stylesheet" href="/css/footer.min.2e3eb191baee58dd05a9f0104ac1fab0827bca7c64dafe0b2579f934c33a1d69.css">
+
+  
+  <link rel="stylesheet" href="/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="/css/header.min.b6fb4423cf82a9f9d7abc9cd010223fa3d70a6526a3f28f8e17d814c06e18f9e.css">
+
+  
+  <link rel="stylesheet" href="/css/main.min.1d8be2dd1b5de9fdaed058c8c59fcf4485f36619574abfb47ed0cfda4812c16d.css">
+
+  
+  <link rel="stylesheet" href="/css/menu.min.83637a90d903026bc280d3f82f96ceb06c5fc72b7c1a8d686afb5bbf818a29f7.css">
+
+  
+  <link rel="stylesheet" href="/css/pagination.min.82f6400eae7c7c6dc3c866733c2ec0579e4089608fea69400ff85b3880aa0d3c.css">
+
+  
+  <link rel="stylesheet" href="/css/post.min.fc74ca360273c1d828da3c02b8174eba435607b369d98418ccc6f2243cd4e75d.css">
+
+  
+  <link rel="stylesheet" href="/css/prism.min.9023bbc24533d09e97a51a0a42a5a7bfe4c591ae167c5551fb1d2191d11977c0.css">
+
+  
+  <link rel="stylesheet" href="/css/syntax.min.cc789ed9377260d7949ea4c18781fc58959a89287210fe4edbff44ebfc1511b6.css">
+
+  
+  <link rel="stylesheet" href="/css/terminal.min.736caf886baa67df630c4cde30fbdc5115122eb74c6246f15a31401344bfa2f0.css">
+
+  
+  <link rel="stylesheet" href="/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+<link rel="stylesheet" href="/terminal.css">
+
+
+
+
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+  
+    <meta name="twitter:site" content="b1_88er" />
+  
+    <meta name="twitter:creator" content="" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Heaps in Golang, a practical guide.">
+<meta property="og:description" content="Heap data structure in Golang." />
+<meta property="og:url" content="/posts/heap-in-golang/" />
+<meta property="og:site_name" content="b1-88er blog" />
+
+  <meta property="og:image" content="/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-07-30 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container center">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    b1-88er blog
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/cv.html">Hire Me</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="/cv.html" >Hire Me</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="/posts/heap-in-golang/">Heaps in Golang, a practical guide.</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-07-30</time></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="/tags/GOtchas/">GOtchas</a>&nbsp;
+      
+      #<a href="/tags/DSA/">DSA</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>Let&rsquo;s go straight to the point. Heaps are not the most commonly known data structure out there. They have very specific properties with narrow use cases. But once I learned about them, I see them more and more useful.</p>
+<p>When you need to get min/max from a collection of items, the first thing that comes to mind is to get it sorted and then take the first/last element. But you don&rsquo;t need to keep everything sorted, you just need to <em>keep the min/max at the top</em>. This is where heaps come in handy. Especially if the collection is dynamic.</p>
+<p>I am not going to explain how this datastructure works in detail, it is done well in <em>a lot</em> of places. Just know that heaps are a binary tree with the following properties, comparing to a sorted array:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Operation</th>
+          <th style="text-align: left">Sorted Array</th>
+          <th style="text-align: left">Heap</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Insert</td>
+          <td style="text-align: left">O(n)</td>
+          <td style="text-align: left">O(log n)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Delete</td>
+          <td style="text-align: left">O(n)</td>
+          <td style="text-align: left">O(log n)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Get Min/Max</td>
+          <td style="text-align: left">O(1)</td>
+          <td style="text-align: left">O(1)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Extract Min/Max (1)</td>
+          <td style="text-align: left">O(n)</td>
+          <td style="text-align: left">O(log n)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Sort/Heapify    (2)</td>
+          <td style="text-align: left">O(n log n)</td>
+          <td style="text-align: left">O(log n)</td>
+      </tr>
+  </tbody>
+</table>
+<p>(1) Extracting min/max is not the same as getting it. It removes the element from the collection.
+(2) Heapify is a process of converting an unsorted array into a heap.</p>
+<h2 id="containerheap">container/heap<a href="#containerheap" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Golang&rsquo;s stdlib has a <code>container/heap</code> package that does the heavy algorithmic lifting. The interface is simple.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Interface</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sort</span>.<span style="color:#a6e22e">Interface</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Push</span>(<span style="color:#a6e22e">x</span> <span style="color:#a6e22e">any</span>) <span style="color:#75715e">// add x as element Len()
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Pop</span>() <span style="color:#a6e22e">any</span>   <span style="color:#75715e">// remove and return element Len() - 1.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>Don&rsquo;t let the sort.Interface confuse you. It won&rsquo;t sort anything - it just needs the same functions: <code>Len()</code>, <code>Less(i, j int) bool</code>, and <code>Swap(i, j int)</code>. You can play around the the basic implementation in the <a href="https://pkg.go.dev/container/heap">official documentation</a>.
+For testing I am going use the <code>IntHeap</code> from the example in the <a href="https://pkg.go.dev/container/heap#example-IntHeap">documentation</a>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">IntHeap</span> []<span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">h</span> <span style="color:#a6e22e">IntHeap</span>) <span style="color:#a6e22e">Len</span>() <span style="color:#66d9ef">int</span>           { <span style="color:#66d9ef">return</span> len(<span style="color:#a6e22e">h</span>) }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">h</span> <span style="color:#a6e22e">IntHeap</span>) <span style="color:#a6e22e">Less</span>(<span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">bool</span> { <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">h</span>[<span style="color:#a6e22e">i</span>] &lt; <span style="color:#a6e22e">h</span>[<span style="color:#a6e22e">j</span>] }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">h</span> <span style="color:#a6e22e">IntHeap</span>) <span style="color:#a6e22e">Swap</span>(<span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#66d9ef">int</span>)      { <span style="color:#a6e22e">h</span>[<span style="color:#a6e22e">i</span>], <span style="color:#a6e22e">h</span>[<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">h</span>[<span style="color:#a6e22e">j</span>], <span style="color:#a6e22e">h</span>[<span style="color:#a6e22e">i</span>] }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">h</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">IntHeap</span>) <span style="color:#a6e22e">Push</span>(<span style="color:#a6e22e">x</span> <span style="color:#a6e22e">any</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Push and Pop use pointer receivers because they modify the slice&#39;s length,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// not just its contents.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#f92672">*</span><span style="color:#a6e22e">h</span> = append(<span style="color:#f92672">*</span><span style="color:#a6e22e">h</span>, <span style="color:#a6e22e">x</span>.(<span style="color:#66d9ef">int</span>))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">h</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">IntHeap</span>) <span style="color:#a6e22e">Pop</span>() <span style="color:#a6e22e">any</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">old</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">h</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">n</span> <span style="color:#f92672">:=</span> len(<span style="color:#a6e22e">old</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">old</span>[<span style="color:#a6e22e">n</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">*</span><span style="color:#a6e22e">h</span> = <span style="color:#a6e22e">old</span>[<span style="color:#ae81ff">0</span> : <span style="color:#a6e22e">n</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">x</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="sorted-array-based-heap">sorted array based heap<a href="#sorted-array-based-heap" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Just for performance comparison, let&rsquo;s implement a heap using a sorted array. I am going to keep the same <code>Pop</code> and <code>Push</code> interface as the <code>container/heap</code> package, but the implementation will be different. Instead of maintaining a binary tree, we will keep an array sorted at all times.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">IntHeapSortedArray</span> []<span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">h</span> <span style="color:#a6e22e">IntHeapSortedArray</span>) <span style="color:#a6e22e">Len</span>() <span style="color:#66d9ef">int</span> { <span style="color:#66d9ef">return</span> len(<span style="color:#a6e22e">h</span>) }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">h</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">IntHeapSortedArray</span>) <span style="color:#a6e22e">Init</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sort</span>.<span style="color:#a6e22e">Ints</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">h</span>) <span style="color:#75715e">// Ensure the array is sorted
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">h</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">IntHeapSortedArray</span>) <span style="color:#a6e22e">Push</span>(<span style="color:#a6e22e">x</span> <span style="color:#a6e22e">any</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">*</span><span style="color:#a6e22e">h</span> = append(<span style="color:#f92672">*</span><span style="color:#a6e22e">h</span>, <span style="color:#a6e22e">x</span>.(<span style="color:#66d9ef">int</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sort</span>.<span style="color:#a6e22e">Ints</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">h</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">h</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">IntHeapSortedArray</span>) <span style="color:#a6e22e">Pop</span>() <span style="color:#a6e22e">any</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> len(<span style="color:#f92672">*</span><span style="color:#a6e22e">h</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#e6db74">&#34;heap is empty&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span> <span style="color:#f92672">:=</span> (<span style="color:#f92672">*</span><span style="color:#a6e22e">h</span>)[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">*</span><span style="color:#a6e22e">h</span> = (<span style="color:#f92672">*</span><span style="color:#a6e22e">h</span>)[<span style="color:#ae81ff">1</span>:]
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">x</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="benchmarking-comparison">benchmarking comparison<a href="#benchmarking-comparison" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Consider the following benchmark. We have 2 heap implementations: one using <code>container/heap</code> and another using a sorted array. We will push and pop items from both heaps and compare their performance. We are going to use different item counts to see how they scale.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">BenchmarkHeaps</span>(<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">B</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">h1</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">IntHeap</span>{}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">h3</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">IntHeapSortedArray</span>{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">heaps</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">h</span>    <span style="color:#a6e22e">SlimHeap</span>
+</span></span><span style="display:flex;"><span>	}{
+</span></span><span style="display:flex;"><span>		{<span style="color:#e6db74">&#34;container/heap&#34;</span>, <span style="color:#a6e22e">h1</span>},
+</span></span><span style="display:flex;"><span>		{<span style="color:#e6db74">&#34;sorted array&#34;</span>, <span style="color:#a6e22e">h3</span>},
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">heap</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">heaps</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">itemCount</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">10</span>; <span style="color:#a6e22e">itemCount</span> &lt; <span style="color:#ae81ff">1001</span>; <span style="color:#a6e22e">itemCount</span> <span style="color:#f92672">*=</span> <span style="color:#ae81ff">10</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s/itemCount=%d&#34;</span>, <span style="color:#a6e22e">heap</span>.<span style="color:#a6e22e">name</span>, <span style="color:#a6e22e">itemCount</span>), <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">B</span>) {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">N</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">j</span> &lt; <span style="color:#a6e22e">itemCount</span>; <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">heap</span>.<span style="color:#a6e22e">h</span>.<span style="color:#a6e22e">Push</span>(<span style="color:#a6e22e">j</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(<span style="color:#ae81ff">1000</span>))
+</span></span><span style="display:flex;"><span>					}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">j</span> &lt; <span style="color:#a6e22e">itemCount</span>; <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>						<span style="color:#a6e22e">heap</span>.<span style="color:#a6e22e">h</span>.<span style="color:#a6e22e">Pop</span>()
+</span></span><span style="display:flex;"><span>					}
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">Equal</span>(<span style="color:#a6e22e">b</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">heap</span>.<span style="color:#a6e22e">h</span>.<span style="color:#a6e22e">Len</span>())
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>			})
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>While the itemCount size grows exponentially (10, 100, 1000), the benchmark execution time grows linearly for the <code>container/heap</code> implementation (498, 3087, 27326), while the sorted array implementation grows exponentially (635.8, 13085, 559916).</p>
+<pre tabindex="0"><code>BenchmarkHeaps/container/heap/itemCount=10-8         	 2493511	       498.0 ns/op	     132 B/op	      16 allocs/op
+BenchmarkHeaps/container/heap/itemCount=100-8        	  344109	      3087 ns/op	    1562 B/op	     195 allocs/op
+BenchmarkHeaps/container/heap/itemCount=1000-8       	   43798	     27326 ns/op	   15944 B/op	    1993 allocs/op
+BenchmarkHeaps/sorted_array/itemCount=10-8           	 1881627	       635.8 ns/op	     292 B/op	      18 allocs/op
+BenchmarkHeaps/sorted_array/itemCount=100-8          	   92127	     13085 ns/op	    3098 B/op	     196 allocs/op
+BenchmarkHeaps/sorted_array/itemCount=1000-8         	    2151	    559916 ns/op	   33864 B/op	    1996 allocs/op
+</code></pre><p>One day I am going to learn how to better visualize benchmark results, but for now this needs to do</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="/posts/yield-and-generators/" class="button inline next">
+        yield, range and lazy evaluation in Golang.
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
